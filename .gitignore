@@ -1,0 +1,11 @@
+# Backend
+backend/target/
+backend/.idea/
+backend/*.iml
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/src/main/resources/application.properties
+
+# Database
+*.sql

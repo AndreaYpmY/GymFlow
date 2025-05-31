@@ -1,0 +1,53 @@
+/* register.component.css */
+.register-wrapper {
+  min-height: calc(100vh - 80px);
+  }
+  
+  .registration-step {
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  .back-button-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+  }
+  
+  .btn-back {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+  }
+  
+  .btn-back:hover {
+    background-color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .register-wrapper {
+      min-height: calc(100vh - 70px);
+    }
+
+    .back-button-container {
+      position: relative;
+      top: 0;
+      left: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+    
+    .btn-back {
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+  }

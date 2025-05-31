@@ -1,0 +1,270 @@
+.info-section {
+    padding: 80px 0;
+    background: rgba(29, 78, 216);
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+  }
+
+  .status-asterisk {
+    font-size: 0.9rem;
+    color: white;
+    margin-left: 0;
+  }
+
+  .status-note {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: right;
+    margin-top: 0;
+  }
+  
+  .status-badge {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+    transition: background 0.3s, border-color 0.3s;
+    
+  }
+  
+  .status-badge.open {
+    background: rgba(16, 185, 129, 0.8);
+  }
+  
+  .status-badge.closed {
+    background: rgba(239, 68, 68, 0.8);
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse { /* Animazione pallino*/
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  /* Schedule Card */
+  .schedule-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .card-icon {
+    font-size: 1.8rem;
+    padding: 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+  }
+  
+  .schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .schedule-item.today {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+  }
+  
+  .schedule-day {
+    font-weight: 600;
+    color: white;
+  }
+  
+  .schedule-hours {
+    font-weight: 700;
+    color: #10b981;
+    font-size: 1.1rem;
+  }
+  
+  .schedule-hours.closed {
+    color: #ef4444;
+  }
+  
+  /* Services Grid */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  
+  .service-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+  
+  .service-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: white;
+    line-height: 1.4;
+  }
+  
+  /* Registration Info */
+  .registration-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .registration-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+  }
+  
+  .registration-content h4 {
+    margin: 0 0 12px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .registration-content p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .info-section {
+      padding: 60px 0;
+    }
+    
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+    }
+    
+    .schedule-card {
+      padding: 24px;
+    }
+    
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .service-item {
+      padding: 16px 12px;
+    }
+    
+    .service-title {
+      font-size: 0.8rem;
+    }
+    
+    .schedule-item {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+    
+    .registration-info {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+    }
+    
+    .registration-info {
+      padding: 20px;
+    }
+  }

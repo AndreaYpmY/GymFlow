@@ -1,0 +1,291 @@
+/* registration-form.component.css */
+.registration-container {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    padding: 20px;
+  }
+  
+  .registration-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 700px;
+    margin: 20px 0;
+  }
+  
+  .registration-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .registration-header h2 {
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .registration-header p {
+    color: #666;
+    margin: 0;
+  }
+  
+  .registration-form {
+    width: 100%;
+  }
+  
+  .section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 20px;
+  }
+  
+  .section h3 {
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #fa709a;
+    display: inline-block;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  .fiscal-code {
+    text-transform: uppercase;
+    font-family: monospace;
+    letter-spacing: 1px;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #fa709a;
+    box-shadow: 0 0 0 3px rgba(250, 112, 154, 0.1);
+  }
+  
+  .form-control.is-invalid {
+    border-color: #dc3545;
+  }
+  
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .checkbox-group {
+    margin-bottom: 25px;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    position: relative;
+    padding-left: 35px;
+    line-height: 1.5;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+  }
+  
+  .checkmark {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  
+  .checkbox-label:hover input ~ .checkmark {
+    background-color: #f0f0f0;
+  }
+  
+  .checkbox-label input:checked ~ .checkmark {
+    background-color: #fa709a;
+    border-color: #fa709a;
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .checkbox-label input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .checkbox-label .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .checkbox-label.is-invalid .checkmark {
+    border-color: #dc3545;
+  }
+  
+  .checkbox-label a {
+    color: #fa709a;
+    text-decoration: none;
+  }
+  
+  .checkbox-label a:hover {
+    text-decoration: underline;
+  }
+  
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+  }
+  
+  .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+  }
+  
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(250, 112, 154, 0.3);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .btn-register {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 15px 24px;
+  }
+  
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .registration-footer {
+    text-align: center;
+  }
+  
+  .registration-footer p {
+    margin: 0;
+    color: #666;
+  }
+  
+  .registration-footer a {
+    color: #fa709a;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .registration-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    
+    .registration-card {
+      padding: 30px 20px;
+    }
+    
+    .registration-container {
+      min-height: calc(100vh - 70px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .section h3 {
+      font-size: 16px;
+    }
+    
+    .form-control {
+      font-size: 16px; /* Prevent zoom on iOS */
+    }
+  }

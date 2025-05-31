@@ -1,0 +1,162 @@
+<!-- registration-form.component.html -->
+<div class="registration-container">
+    <div class="registration-card">
+      <div class="registration-header">
+        <h2>Registrazione {{ getRoleDisplayName() }}</h2>
+        <p>Compila i campi per completare la registrazione</p>
+      </div>
+  
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+        
+        <!-- Campi Obbligatori -->
+        <div class="section">
+          <h3>Dati Obbligatori</h3>
+          
+          <!-- Email -->
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [class.is-invalid]="email?.invalid && email?.touched"
+              placeholder="Inserisci la tua email"
+            >
+            <div *ngIf="email?.invalid && email?.touched" class="invalid-feedback">
+              <small *ngIf="email?.errors?.['required']">L'email è obbligatoria</small>
+              <small *ngIf="email?.errors?.['email']">Inserisci un'email valida</small>
+            </div>
+          </div>
+  
+          <!-- Codice Fiscale -->
+          <div class="form-group">
+            <label for="fiscalCode">Codice Fiscale *</label>
+            <input
+              type="text"
+              id="fiscalCode"
+              formControlName="fiscalCode"
+              class="form-control fiscal-code"
+              [class.is-invalid]="fiscalCode?.invalid && fiscalCode?.touched"
+              placeholder="RSSMRA80A01H501U"
+              maxlength="16"
+            >
+            <div *ngIf="fiscalCode?.invalid && fiscalCode?.touched" class="invalid-feedback">
+              <small *ngIf="fiscalCode?.errors?.['required']">Il codice fiscale è obbligatorio</small>
+              <small *ngIf="fiscalCode?.errors?.['pattern']">Formato codice fiscale non valido</small>
+            </div>
+          </div>
+  
+          <!-- Password -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                class="form-control"
+                [class.is-invalid]="password?.invalid && password?.touched"
+                placeholder="Minimo 8 caratteri"
+              >
+              <div *ngIf="password?.invalid && password?.touched" class="invalid-feedback">
+                <small *ngIf="password?.errors?.['required']">La password è obbligatoria</small>
+                <small *ngIf="password?.errors?.['minlength']">La password deve essere di almeno 8 caratteri</small>
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label for="confirmPassword">Conferma Password *</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                class="form-control"
+                [class.is-invalid]="confirmPassword?.invalid && confirmPassword?.touched"
+                placeholder="Ripeti la password"
+              >
+              <div *ngIf="confirmPassword?.invalid && confirmPassword?.touched" class="invalid-feedback">
+                <small *ngIf="confirmPassword?.errors?.['required']">Conferma la password</small>
+                <small *ngIf="confirmPassword?.errors?.['passwordMismatch']">Le password non coincidono</small>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Campi Opzionali -->
+        <div class="section">
+          <h3>Dati Opzionali</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">Nome</label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-control"
+                placeholder="Il tuo nome"
+              >
+            </div>
+  
+            <div class="form-group">
+              <label for="lastName">Cognome</label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-control"
+                placeholder="Il tuo cognome"
+              >
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="birthDate">Data di Nascita</label>
+            <input
+              type="date"
+              id="birthDate"
+              formControlName="birthDate"
+              class="form-control"
+            >
+          </div>
+        </div>
+  
+        <!-- Accettazione Termini -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="acceptTerms"
+              [class.is-invalid]="acceptTerms?.invalid && acceptTerms?.touched"
+            >
+            <span class="checkmark"></span>
+            Accetto i <a href="#" target="_blank">Termini e Condizioni</a> e la <a href="#" target="_blank">Privacy Policy</a> *
+          </label>
+          <div *ngIf="acceptTerms?.invalid && acceptTerms?.touched" class="invalid-feedback">
+            <small>Devi accettare i termini e condizioni</small>
+          </div>
+        </div>
+  
+        <!-- Messaggio di errore generale -->
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+  
+        <!-- Pulsante Submit -->
+        <button
+          type="submit"
+          class="btn btn-primary btn-register"
+          [disabled]="isLoading"
+        >
+          <span *ngIf="isLoading" class="spinner"></span>
+          {{ isLoading ? 'Registrazione in corso...' : 'Completa Registrazione' }}
+        </button>
+  
+        <!-- Link login -->
+        <div class="registration-footer">
+          <p>Hai già un account? <a routerLink="/login">Accedi qui</a></p>
+        </div>
+      </form>
+    </div>
+  </div>

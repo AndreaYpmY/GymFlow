@@ -1,0 +1,45 @@
+<!-- announcements-carousel.component.html -->
+<section class="announcements-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Avvisi e Novità</h2>
+        <p class="section-subtitle">Rimani sempre aggiornato</p>
+      </div>
+      
+      <div class="carousel-container">
+        <div class="carousel-track" 
+             [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
+          <div class="announcement-slide" 
+               *ngFor="let announcement of announcements; let i = index"
+               [class]="getTypeClass(announcement.type)">
+            <div class="announcement-content">
+              <div class="announcement-header">
+                <span class="announcement-icon">{{ announcement.icon }}</span>
+                <span class="announcement-date">{{ announcement.date }}</span>
+              </div>
+              <h3 class="announcement-title">{{ announcement.title }}</h3>
+              <p class="announcement-description">{{ announcement.description }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Navigation Arrows -->
+        <button class="carousel-btn carousel-prev" (click)="prevSlide()">
+          ‹
+        </button>
+        <button class="carousel-btn carousel-next" (click)="nextSlide()">
+          ›
+        </button>
+        
+        <!-- Dots Indicator -->
+        <div class="carousel-dots">
+          <button 
+            class="dot" 
+            *ngFor="let announcement of announcements; let i = index"
+            [class.active]="i === currentSlide"
+            (click)="goToSlide(i)">
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>

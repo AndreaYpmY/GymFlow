@@ -1,0 +1,60 @@
+<!-- code-verification.component.html -->
+<div class="verification-container">
+  <div class="verification-card">
+    <div class="verification-header">
+      <h2>Verifica Codice</h2>
+      <p>Inserisci il codice fornito dal proprietario o dall'addetto della struttura</p>
+    </div>
+
+    <form [formGroup]="codeForm" (ngSubmit)="onSubmit()" class="verification-form">
+      <!-- Campo Codice -->
+      <div class="form-group">
+        <label for="code">Codice di Registrazione</label>
+        <input
+          type="text"
+          id="code"
+          formControlName="code"
+          class="form-control code-input"
+          [class.is-invalid]="code?.invalid && code?.touched"
+          placeholder="Inserisci il codice"
+          maxlength="10"
+        >
+
+        @if (code?.invalid && code?.touched) {
+          <div class="invalid-feedback">
+            @if (code?.errors?.['required']) {
+              <small>Il codice è obbligatorio</small>
+            }
+            @if (code?.errors?.['minlength']) {
+              <small>Il codice deve essere di almeno 6 caratteri</small>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Messaggio di errore -->
+      @if (errorMessage) {
+        <div class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <!-- Pulsante Submit -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-verify"
+        [disabled]="isLoading"
+      >
+        @if (isLoading) {
+          <span class="spinner"></span>
+        }
+        {{ isLoading ? 'Verifica in corso...' : 'Verifica Codice' }}
+      </button>
+
+      <!-- Link login -->
+      <div class="verification-footer">
+        <p>Hai già un account? <a routerLink="/login">Accedi qui</a></p>
+      </div>
+    </form>
+  </div>
+</div>

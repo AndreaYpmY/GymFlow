@@ -1,0 +1,38 @@
+<!-- features-section.component.html -->
+<section class="features-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Tutto quello che ti serve</h2>
+        <p class="section-subtitle">
+          Gestisci la tua esperienza in palestra con strumenti semplici ed efficaci
+        </p>
+      </div>
+      
+      <div class="features-grid">
+        <div 
+          class="feature-card" 
+          *ngFor="let feature of features"
+          (click)="onFeatureClick(feature)"
+        >
+          <div class="feature-header">
+            <div class="feature-icon">{{ feature.icon }}</div>
+            <div class="feature-badge" *ngIf="feature.badge">
+              {{ feature.badge }}
+            </div>
+          </div>
+          
+          <div class="feature-content">
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-description">{{ feature.description }}</p>
+          </div>
+          
+          <div class="feature-footer">
+            <button class="feature-action">
+              {{ feature.action }}
+              <span class="arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

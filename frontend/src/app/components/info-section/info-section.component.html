@@ -1,0 +1,56 @@
+<section class="info-section">
+    <div class="container">
+      
+        
+        <!-- Orari -->
+        <div class="section-header">
+            <h2 class="section-title">Informazioni Utili</h2>
+            <div class="status-badge" [class.open]="isOpen()" [class.closed]="!isOpen()">
+              <span class="status-dot"></span>
+              {{ isOpen() ? 'APERTO ORA' : 'CHIUSO ORA' }}<span class="status-asterisk">*</span>
+            </div>
+            
+          </div>
+          <p class="status-note">* Gli orari possono variare in caso di festività o eventi eccezionali. Consultare gli avvisi in bacheca per aggiornamenti.</p>
+          <div class="schedule-card">
+            <div class="card-header">
+              <div class="card-icon">🕐</div>
+              <h3 class="card-title">Orari di Apertura</h3>
+            </div>
+            <div class="schedule-list">
+              @for (day of schedule; track day.day) {
+                <div class="schedule-item" [class.today]="day.isToday">
+                  <span class="schedule-day">{{ day.day }}</span>
+                  <span class="schedule-hours" [class.closed]="day.hours === 'CHIUSO'">
+                    {{ day.hours }}
+                  </span>
+                </div>
+              } @empty {
+                <p>Nessun orario disponibile.</p>
+              }
+            </div>
+          </div>
+          
+
+          <div class="services-grid">
+            @for (item of infoItems; track item.title) {
+              <div class="service-item">
+                <div class="service-icon">{{ item.icon }}</div>
+                <span class="service-title">{{ item.title }}</span>
+              </div>
+            } @empty {
+              <p>Nessun servizio disponibile.</p>
+            }
+          </div>
+    
+        <!-- Registration Info -->
+    <div class="registration-info">
+        <div class="registration-icon">🏢</div>
+        <div class="registration-content">
+          <h4>Come Iscriversi</h4>
+          <p>Per iscriverti alla palestra è necessario recarsi in struttura. Il nostro personale ti fornirà un codice necessario per completare la registrazione online.</p>
+        </div>
+      </div>
+  
+    </div>
+  </section>

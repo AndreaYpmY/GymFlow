@@ -1,0 +1,56 @@
+<!-- public-workouts.component.html -->
+<section class="workouts-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Schede di Allenamento Pubbliche</h2>
+        <p class="section-subtitle">
+          Scopri le schede create dai nostri istruttori, disponibili per tutti
+        </p>
+      </div>
+      
+      <div class="workouts-grid">
+        <div 
+          class="workout-card" 
+          *ngFor="let workout of featuredWorkouts"
+          (click)="onWorkoutClick(workout)"
+        >
+          <div class="workout-image">
+            <img [src]="workout.image" [alt]="workout.title">
+            <div class="workout-overlay">
+              <div class="workout-level" [class]="getLevelClass(workout.level)">
+                {{ workout.level }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="workout-content">
+            <h3 class="workout-title">{{ workout.title }}</h3>
+            <p class="workout-description">{{ workout.description }}</p>
+            
+            <div class="workout-meta">
+              <div class="meta-item">
+                <span class="meta-icon">⏱️</span>
+                <span>{{ workout.duration }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-icon">🏋️</span>
+                <span>{{ workout.exercises }} esercizi</span>
+              </div>
+            </div>
+            
+            <div class="workout-instructor">
+              <span class="instructor-label">Istruttore:</span>
+              <span class="instructor-name">{{ workout.instructor }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section-footer">
+        <button class="btn btn-primary btn-large" (click)="onExploreAll()">
+          Esplora Tutte le Schede
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </section>

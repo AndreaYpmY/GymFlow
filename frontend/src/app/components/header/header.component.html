@@ -1,0 +1,130 @@
+<header class="header">
+  <div class="header-container">
+    <!-- Logo -->
+    <a class="logo" routerLink="/" (click)="closeMobileMenu()">
+      <i class="fas fa-dumbbell"></i>
+      <span>GymFlow</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+      <ul class="menu">
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/about')"
+            (click)="navigateTo('/about')">
+            Avvisi
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/about')"
+            (click)="navigateTo('/about')">
+            Prenota
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/about')"
+            (click)="navigateTo('/about')">
+            Allenamento
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+
+    <div class="auth-buttons desktop-nav">
+      @if(!isAuthenticated) {
+        <button class="btn btn-outline" (click)="onLogin()">
+          <i class="fas fa-sign-in-alt"></i>
+          Accedi
+        </button>
+        <button class="btn btn-primary" (click)="onRegister()">
+          <i class="fas fa-user-plus"></i>
+          Registrati
+        </button>
+      } @else {
+        <button class="btn btn-secondary" (click)="onLogout()">
+          <i class="fas fa-sign-out-alt"></i>
+          Esci
+        </button>
+      }
+    </div>
+
+
+
+
+
+    <!-- Mobile Menu Toggle -->
+    <button 
+      class="mobile-menu-toggle" 
+      [class.active]="isMobileMenuOpen"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile Navigation -->
+    <nav class="nav-menu" [class.active]="isMobileMenuOpen">
+      <ul>
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/')"
+            (click)="navigateTo('/')">
+            Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/about')"
+            (click)="navigateTo('/about')">
+            Avvisi
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/services')"
+            (click)="navigateTo('/services')">
+            Prenota
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            [class.active]="isActiveRoute('/contact')"
+            (click)="navigateTo('/contact')">
+            Allenamento
+          </a>
+        </li>
+      </ul>
+      
+      <div class="auth-buttons">
+        @if(!isAuthenticated) {
+          <button class="btn btn-outline" (click)="onLogin()">
+            <i class="fas fa-sign-in-alt"></i>
+            Accedi
+          </button>
+          <button class="btn btn-primary" (click)="onRegister()">
+            <i class="fas fa-user-plus"></i>
+            Registrati
+          </button>
+        } @else {
+          <button class="btn btn-secondary" (click)="onLogout()">
+            <i class="fas fa-sign-out-alt"></i>
+            Esci
+          </button>
+        }
+      </div>
+        
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,33 @@
+<!-- register.component.html -->
+<div class="register-wrapper">
+  
+  <!-- Step 1: Code Verification -->
+  @if (currentStep === 'code-verification') {
+    <app-code-verification 
+      (codeVerified)="onCodeVerified($event)">
+    </app-code-verification>
+  }
+
+  <!-- Step 2: Registration Form -->
+  @if (currentStep === 'registration') {
+    <div class="registration-step">
+      
+      <!-- Back Button -->
+      <div class="back-button-container">
+        <button 
+          type="button" 
+          class="btn btn-back"
+          (click)="onBackToCodeVerification()">
+          ← Torna alla verifica codice
+        </button>
+      </div>
+
+      <!-- Registration Form -->
+      <app-registration-form
+        [userRole]="userRole"
+        [verificationCode]="verificationCode">
+      </app-registration-form>
+    </div>
+  }
+
+</div>

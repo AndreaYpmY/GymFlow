@@ -1,0 +1,83 @@
+<!-- login.component.html -->
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Accedi</h2>
+      <p>Inserisci le tue credenziali per accedere</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Campo Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          [class.is-invalid]="email?.invalid && email?.touched"
+          placeholder="Inserisci la tua email"
+        >
+
+        @if (email?.invalid && email?.touched) {
+          <div class="invalid-feedback">
+            @if (email?.errors?.['required']) {
+              <small>L'email è obbligatoria</small>
+            }
+            @if (email?.errors?.['email']) {
+              <small>Inserisci un'email valida</small>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Campo Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          [class.is-invalid]="password?.invalid && password?.touched"
+          placeholder="Inserisci la tua password"
+        >
+
+        @if (password?.invalid && password?.touched) {
+          <div class="invalid-feedback">
+            @if (password?.errors?.['required']) {
+              <small>La password è obbligatoria</small>
+            }
+            @if (password?.errors?.['minlength']) {
+              <small>La password deve essere di almeno 6 caratteri</small>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Messaggio di errore generale -->
+      @if (errorMessage) {
+        <div class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <!-- Pulsante Submit -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-login"
+        [disabled]="isLoading"
+      >
+        @if (isLoading) {
+          <span class="spinner"></span>
+        }
+        {{ isLoading ? 'Accesso in corso...' : 'Accedi' }}
+      </button>
+
+      <!-- Link registrazione -->
+      <div class="login-footer">
+        <p>Non hai un account? <a routerLink="/register">Registrati qui</a></p>
+      </div>
+    </form>
+  </div>
+</div>

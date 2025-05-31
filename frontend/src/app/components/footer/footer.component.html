@@ -1,0 +1,102 @@
+<!-- footer.component.html -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-container">
+      <!-- Logo e Descrizione -->
+      <div class="footer-section footer-brand">
+        <div class="brand-logo">
+          <i class="fas fa-dumbbell"></i>
+          <span class="logo-text">GymFlow</span>
+        </div>
+        <p class="brand-description">
+          La tua palestra di fiducia per raggiungere tutti i tuoi obiettivi di fitness. 
+          Attrezzature moderne, istruttori qualificati e un ambiente accogliente ti aspettano.
+        </p>
+        <div class="social-links">
+          @for (social of socialLinks; track social.name) {
+          <a 
+            [href]="social.url" 
+            target="_blank"
+            [attr.aria-label]="social.name"
+            class="social-link">
+            <fa-icon [icon]="['fab', social.icon]"></fa-icon>
+          </a>
+        } @empty {
+          <span>Nessun social link disponibile.</span>
+        }
+        </div>
+      </div>
+
+      <!-- Contatti -->
+      <div class="footer-section">
+        <h3 class="footer-title">Contatti</h3>
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ contactInfo.address }}</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <a href="tel:{{ contactInfo.phone }}">{{ contactInfo.phone }}</a>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <a href="mailto:{{ contactInfo.email }}">{{ contactInfo.email }}</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orari -->
+      <div class="footer-section">
+        <h3 class="footer-title">Orari di Apertura</h3>
+        <div class="hours-info">
+          <div class="hours-item">
+            <span class="hours-days">{{ contactInfo.hours.weekdays }}</span>
+          </div>
+          <div class="hours-item">
+            <span class="hours-days">{{ contactInfo.hours.saturday }}</span>
+          </div>
+          <div class="hours-item">
+            <span class="hours-days">{{ contactInfo.hours.sunday }}</span>
+          </div>
+          <div class="hours-note">
+            <i class="fas fa-info-circle"></i>
+            <span>Giorni festivi: Orari variabili</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Link Utili -->
+      <div class="footer-section">
+        <h3 class="footer-title">Link Utili</h3>
+        <ul class="footer-links">
+          @for (link of quickLinks; track link.path) {
+            <li>
+              <a [routerLink]="link.path" class="footer-link">
+                {{ link.name }}
+              </a>
+            </li>
+          } @empty {
+            <li>Nessun link disponibile.</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="footer-bottom">
+    <div class="footer-container">
+      <div class="copyright">
+        <p>&copy; {{ currentYear }} GymFlow. Tutti i diritti riservati.</p>
+      </div>
+      <div class="footer-legal">
+        <a routerLink="/privacy" class="legal-link">Privacy</a>
+        <span class="separator">|</span>
+        <a routerLink="/terms" class="legal-link">Termini</a>
+        <span class="separator">|</span>
+        <a routerLink="/cookies" class="legal-link">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>

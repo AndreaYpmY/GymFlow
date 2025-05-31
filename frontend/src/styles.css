@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    font-family: Roboto, sans-serif;
+  }
+  
+  .mat-toolbar {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .mat-button.mat-accent {
+    background-color: #4caf50;
+    color: white;
+  }
