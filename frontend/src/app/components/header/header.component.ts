@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { AuthService, UserRole } from '../../services/auth.service';
+import { UserRole } from '../../services/auth.types';
 
 
 @Component({
@@ -24,7 +24,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userRole: UserRole = null;
 
   private routerSubscription: Subscription; // Subscription per gli eventi di navigazione
-  private authSubscription: Subscription; // Subscription per lo stato di autenticazione
 
   ngOnInit(): void {
     this.currentRoute = this.router.url;
@@ -34,12 +33,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router) {
     // Sottoscrizione agli eventi di navigazione
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -48,11 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.closeMobileMenu(); 
       });
 
-    // Sottoscrizione allo stato di autenticazione
-    this.authSubscription = this.authService.user$.subscribe(user => {
-      this.isAuthenticated = this.authService.isAuthenticated();
-      this.userRole = user?.role || null;
-    });
+      // todo: controllare lo stato di autenticazione
   }
 
   // Listener per chiudere menu mobile quando si clicca fuori
@@ -110,7 +102,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout(): void {
-    this.authService.logout();
     this.router.navigate(['/']);
     this.closeMobileMenu();
   }

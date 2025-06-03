@@ -1,0 +1,118 @@
+<div class="admin-registration-container">
+    <div class="admin-registration-card">
+      <div class="admin-registration-header">
+        <h2>Registrazione Nuovo Utente</h2>
+        <p>Inserisci i dati dell'utente da registrare nel sistema</p>
+      </div>
+  
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="admin-registration-form">
+        
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="email?.invalid && email?.touched"
+            placeholder="Inserisci l'email dell'utente"
+          >
+          @if (email?.invalid && email?.touched) {
+            <div class="invalid-feedback">
+              @if (email?.errors?.['required']) {
+                <small>L'email è obbligatoria</small>
+              }
+              @if (email?.errors?.['email']) {
+                <small>Inserisci un'email valida</small>
+              }
+            </div>
+          }
+        </div>
+  
+        <!-- Codice Fiscale -->
+        <div class="form-group">
+          <label for="fiscalCode">Codice Fiscale *</label>
+          <input
+            type="text"
+            id="fiscalCode"
+            formControlName="fiscalCode"
+            class="form-control fiscal-code"
+            [class.is-invalid]="fiscalCode?.invalid && fiscalCode?.touched"
+            placeholder="RSSMRA80A01H501U"
+            maxlength="16"
+          >
+          @if (fiscalCode?.invalid && fiscalCode?.touched) {
+            <div class="invalid-feedback">
+              @if (fiscalCode?.errors?.['required']) {
+                <small>Il codice fiscale è obbligatorio</small>
+              }
+              @if (fiscalCode?.errors?.['pattern']) {
+                <small>Formato codice fiscale non valido</small>
+              }
+            </div>
+          }
+        </div>
+  
+        <!-- Ruolo -->
+        <div class="form-group">
+          <label for="role">Ruolo *</label>
+          <select
+            id="role"
+            formControlName="role"
+            class="form-control form-select"
+            [class.is-invalid]="role?.invalid && role?.touched"
+          >
+            <option value="">Seleziona un ruolo</option>
+            <option *ngFor="let roleOption of userRoles" [value]="roleOption.value">
+              {{ roleOption.display }}
+            </option>
+          </select>
+          @if (role?.invalid && role?.touched) {
+            <div class="invalid-feedback">
+              @if (role?.errors?.['required']) {
+                <small>Il ruolo è obbligatorio</small>
+              }
+            </div>
+          }
+        </div>
+  
+        <!-- Messaggio di successo -->
+        @if (successMessage) {
+          <div class="alert alert-success">
+            {{ successMessage }}
+          </div>
+        }
+  
+        <!-- Messaggio di errore generale -->
+        @if (errorMessage) {
+          <div class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+        }
+  
+        <!-- Pulsanti -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onReset()"
+            [disabled]="isLoading"
+          >
+            Pulisci Form
+          </button>
+          
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isLoading"
+          >
+            @if (isLoading) {
+              <span class="spinner"></span>
+            }
+            {{ isLoading ? 'Registrazione in corso...' : 'Registra Utente' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

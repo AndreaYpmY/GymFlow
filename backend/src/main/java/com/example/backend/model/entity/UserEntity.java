@@ -38,12 +38,14 @@ public class UserEntity {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // Optional fields
     private String name;
 
     private String surname;
 
     private LocalDate dateOfBirth;
+
+    // Codice per la verifica
+    private String verificationCode;
 
 
 

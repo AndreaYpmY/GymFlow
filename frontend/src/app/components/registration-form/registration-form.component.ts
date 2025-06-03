@@ -1,6 +1,6 @@
 // registration-form.component.ts
 import { Component, Input } from '@angular/core';
-import { ReactiveFormsModule,FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class RegistrationFormComponent {
   @Input() userRole: string = '';
   @Input() verificationCode: string = '';
+  @Input() userEmail: string = ''; // Email ricevuta dal server dopo verifica codice
   
   registrationForm: FormGroup;
   isLoading = false;
@@ -23,13 +24,11 @@ export class RegistrationFormComponent {
     private router: Router
   ) {
     this.registrationForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      fiscalCode: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{6}[0-9]{2}[A-Za-z][0-9]{2}[A-Za-z][0-9]{3}[A-Za-z]$/)]],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      birthDate: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
-      firstName: [''],
-      lastName: [''],
-      birthDate: [''],
       acceptTerms: [false, [Validators.requiredTrue]]
     }, { validators: this.passwordMatchValidator });
   }
@@ -59,14 +58,14 @@ export class RegistrationFormComponent {
       this.errorMessage = '';
       
       const formData = {
-        ...this.registrationForm.value,
+        email: this.userEmail,
+        firstName: this.registrationForm.value.firstName,
+        lastName: this.registrationForm.value.lastName,
+        birthDate: this.registrationForm.value.birthDate,
+        password: this.registrationForm.value.password,
         role: this.userRole,
         verificationCode: this.verificationCode
       };
-      
-      // Remove confirmPassword from submission
-      delete formData.confirmPassword;
-      delete formData.acceptTerms;
       
       // Simulazione chiamata API
       setTimeout(() => {
@@ -87,7 +86,6 @@ export class RegistrationFormComponent {
     });
   }
 
-
   getRoleDisplayName(): string {
     const roleNames = {
       'client': 'Cliente',
@@ -97,12 +95,10 @@ export class RegistrationFormComponent {
   }
 
   // Getters per template
-  get email() { return this.registrationForm.get('email'); }
-  get fiscalCode() { return this.registrationForm.get('fiscalCode'); }
-  get password() { return this.registrationForm.get('password'); }
-  get confirmPassword() { return this.registrationForm.get('confirmPassword'); }
   get firstName() { return this.registrationForm.get('firstName'); }
   get lastName() { return this.registrationForm.get('lastName'); }
   get birthDate() { return this.registrationForm.get('birthDate'); }
+  get password() { return this.registrationForm.get('password'); }
+  get confirmPassword() { return this.registrationForm.get('confirmPassword'); }
   get acceptTerms() { return this.registrationForm.get('acceptTerms'); }
 }
