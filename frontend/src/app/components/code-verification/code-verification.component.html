@@ -15,17 +15,17 @@
           id="code"
           formControlName="code"
           class="form-control code-input"
-          [class.is-invalid]="code?.invalid && code?.touched"
+          [class.is-invalid]="getCode?.invalid && getCode?.touched"
           placeholder="Inserisci il codice"
           maxlength="10"
         >
 
-        @if (code?.invalid && code?.touched) {
+        @if (getCode?.invalid && getCode?.touched) {
           <div class="invalid-feedback">
-            @if (code?.errors?.['required']) {
+            @if (getCode?.errors?.['required']) {
               <small>Il codice è obbligatorio</small>
             }
-            @if (code?.errors?.['minlength']) {
+            @if (getCode?.errors?.['minlength']) {
               <small>Il codice deve essere di almeno 6 caratteri</small>
             }
           </div>

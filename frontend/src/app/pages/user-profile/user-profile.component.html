@@ -1,0 +1,70 @@
+<div class="user-profile-container">
+  <div class="profile-header">
+    <h1>Area Personale</h1>
+    <div class="user-info">
+      <span class="user-name">{{ currentUser?.name }} {{ currentUser?.surname }}</span>
+      <span class="user-role" [ngClass]="'role-' + currentUser?.role?.toLowerCase()">
+        {{ currentUser?.role }}
+      </span>
+    </div>
+  </div>
+
+  <div class="profile-tabs">
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'personal-data'"
+      (click)="setActiveTab('personal-data')">
+      Dati Personali
+    </button>
+
+    @if (isAdmin()) {
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'user-management'"
+        (click)="setActiveTab('user-management')">
+        Gestione Utenti
+      </button>
+    }
+
+    @if (isTrainer()) {
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'trainer-area'"
+        (click)="setActiveTab('trainer-area')">
+        Area Trainer
+      </button>
+    }
+
+    @if (isClient()) {
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'client-area'"
+        (click)="setActiveTab('client-area')">
+        Area Client
+      </button>
+    }
+  </div>
+
+  <div class="profile-content">
+    @if (activeTab === 'personal-data') {
+      <app-personal-data [user]="currentUser" (userUpdated)="onUserUpdated($event)"> </app-personal-data>
+    }
+
+    @if (activeTab === 'user-management' && isAdmin()) {
+      <app-user-management></app-user-management>
+    }
+
+    @if (activeTab === 'trainer-area') {
+      <div class="coming-soon">
+        Area Trainer - In sviluppo
+      </div>
+    }
+
+    @if (activeTab === 'client-area') {
+      <div class="coming-soon">
+        Area Client - In sviluppo
+      </div>
+    }
+  </div>
+
+</div>

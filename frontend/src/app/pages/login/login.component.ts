@@ -1,8 +1,8 @@
-// login.component.ts
 import { Component } from '@angular/core';
 import { ReactiveFormsModule,FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -19,7 +19,8 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -31,17 +32,31 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      
+        
       // Qui implementerai la logica di autenticazione
       const { email, password } = this.loginForm.value;
-      
+
       // Simulazione chiamata API
-      setTimeout(() => {
+      /*setTimeout(() => {
         this.isLoading = false;
         // Qui gestirai la risposta del server
         console.log('Login attempt:', { email, password });
         // this.router.navigate(['/dashboard']);
-      }, 1000);
+      }, 1000);*/
+      
+      this.authService.login(email, password).subscribe({
+        next: (response) => {
+          //console.log('Login successful:', response);
+          this.isLoading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          console.error('Login failed:', error);
+          this.isLoading = false;
+          this.errorMessage = 'Email o password non validi';
+        }
+      });
+
     } else {
       this.markFormGroupTouched();
     }

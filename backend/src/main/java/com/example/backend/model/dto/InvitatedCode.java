@@ -2,7 +2,7 @@ package com.example.backend.model.dto;
 
 import lombok.Data;
 
-@Data
+//@Data
 public class InvitatedCode {
 
     private long id;
@@ -18,5 +18,29 @@ public class InvitatedCode {
             }
         }
         this.code = code.toString();
+    }
+
+    public InvitatedCode() {
+        generateCode();
+    }
+
+    public InvitatedCode(long id, String code) {
+        this.id = id;
+        this.code = code;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "reservation", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"client_id", "session_id"})
 })
-@Getter
-@Setter
 public class ReservationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +25,47 @@ public class ReservationEntity {
 
     @Column(nullable = false)
     private LocalDateTime date;
+
+    public ReservationEntity() {
+    }
+
+    public ReservationEntity(ClientEntity client, SessionEntity session, LocalDateTime date) {
+        this.client = client;
+        this.session = session;
+        this.date = date;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ClientEntity getClient() {
+        return client;
+    }
+
+    public void setClient(ClientEntity client) {
+        this.client = client;
+    }
+
+    public SessionEntity getSession() {
+        return session;
+    }
+
+    public void setSession(SessionEntity session) {
+        this.session = session;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
 
 }

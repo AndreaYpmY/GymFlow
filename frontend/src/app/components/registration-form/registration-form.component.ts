@@ -2,6 +2,8 @@
 import { Component, Input } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { finishRegistrationUserRequest } from '../../services/types';
 
 @Component({
   selector: 'app-registration-form',
@@ -12,8 +14,7 @@ import { Router } from '@angular/router';
 })
 export class RegistrationFormComponent {
   @Input() userRole: string = '';
-  @Input() verificationCode: string = '';
-  @Input() userEmail: string = ''; // Email ricevuta dal server dopo verifica codice
+  @Input() email: string = ''; // Email ricevuta dal server dopo verifica codice
   
   registrationForm: FormGroup;
   isLoading = false;
@@ -21,7 +22,8 @@ export class RegistrationFormComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.registrationForm = this.fb.group({
       firstName: ['', [Validators.required]],
@@ -57,23 +59,33 @@ export class RegistrationFormComponent {
       this.isLoading = true;
       this.errorMessage = '';
       
-      const formData = {
-        email: this.userEmail,
-        firstName: this.registrationForm.value.firstName,
-        lastName: this.registrationForm.value.lastName,
-        birthDate: this.registrationForm.value.birthDate,
+      const formData:finishRegistrationUserRequest = {
+        name: this.registrationForm.value.firstName,
+        surname: this.registrationForm.value.lastName,
+        dateOfBirth: this.registrationForm.value.birthDate,
         password: this.registrationForm.value.password,
-        role: this.userRole,
-        verificationCode: this.verificationCode
       };
       
       // Simulazione chiamata API
-      setTimeout(() => {
+      /*setTimeout(() => {
         this.isLoading = false;
         console.log('Registration data:', formData);
         // Qui gestirai la risposta del server
         // this.router.navigate(['/login'], { queryParams: { registered: true } });
-      }, 2000);
+      }, 2000);*/
+      this.authService.finishUserCreation(formData).subscribe({
+        next: (response) => {
+          this.isLoading=false;
+          console.log('Registration data:', formData);
+          this.router.navigate(['/home']);
+        },error: (error) => {
+          this.isLoading = false;
+          console.error('Errore durante la registrazione', error);
+          this.errorMessage = 'Errore nella fase di registrazione';
+        }
+      })
+      
+
     } else {
       this.markFormGroupTouched();
     }

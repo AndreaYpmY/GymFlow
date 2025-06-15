@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { UserRole } from '../../services/auth.types';
+import { UserRole } from '../../services/types';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -21,31 +22,38 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentRoute = '';
 
   isAuthenticated = false;
-  userRole: UserRole = null;
 
-  private routerSubscription: Subscription; // Subscription per gli eventi di navigazione
+  private subscriptions: Subscription = new Subscription();
 
   ngOnInit(): void {
+    this.subscriptions.add(
+      this.authService.authenticated$.subscribe(authentication => {
+        this.isAuthenticated = authentication;
+      }
+    ));
+
+    // Verifica lo stato inizile
     this.currentRoute = this.router.url;
   }
 
-  ngOnDestroy(): void { // Pulizia delle subscription
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
+  ngOnDestroy(): void { // Eliminazione subscription
+    this.subscriptions.unsubscribe(); 
   }
 
-  constructor(private router: Router) {
-    // Sottoscrizione agli eventi di navigazione
-    this.routerSubscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.currentRoute = event.url;
-        this.closeMobileMenu(); 
-      });
 
-      // todo: controllare lo stato di autenticazione
+
+  constructor(private router: Router, private authService: AuthService) {
+    this.subscriptions.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => { // Quando la cambia la rotta: si aggiorna la rotta corrente
+          this.currentRoute = event.url;
+          this.closeMobileMenu();
+        })
+    );
   }
+
+  
 
   // Listener per chiudere menu mobile quando si clicca fuori
   @HostListener('document:click', ['$event'])
@@ -102,19 +110,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout(): void {
-    this.router.navigate(['/']);
-    this.closeMobileMenu();
+    this.authService.logout().subscribe({
+      next: () => {
+        this.isAuthenticated = false;
+        this.router.navigate(['/']);
+        this.closeMobileMenu();
+      },
+      error: (error) => {
+        console.error('Errore durante il logout:', error);
+      }
+    });
   }
 
-  navigateToDashboard(): void {
-    const role = this.userRole;
-    if (role === 'Admin') {
-      this.router.navigate(['/admin-dashboard']);
-    } else if (role === 'Trainer') {
-      this.router.navigate(['/trainer-dashboard']);
-    } else if (role === 'Client') {
-      this.router.navigate(['/client-dashboard']);
-    }
+  onPersonalArea(): void {
+    this.router.navigate(['/personal']);
     this.closeMobileMenu();
   }
 }

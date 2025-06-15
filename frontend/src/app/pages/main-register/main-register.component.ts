@@ -19,18 +19,17 @@ import { CommonModule } from '@angular/common';
 })
 export class RegisterComponent {
   currentStep: 'code-verification' | 'registration' = 'code-verification';
-  verificationCode: string = '';
+  email: string = '';
   userRole: string = '';
 
-  onCodeVerified(event: {code: string, role: string}) {
-    this.verificationCode = event.code;
+  onCodeVerified(event: {email: string, role: string}) {
+    this.email = event.email;
     this.userRole = event.role;
     this.currentStep = 'registration';
   }
 
   onBackToCodeVerification() {
     this.currentStep = 'code-verification';
-    this.verificationCode = '';
     this.userRole = '';
   }
 }

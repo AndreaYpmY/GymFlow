@@ -10,10 +10,10 @@ public class User {
     private String fiscalCode;
     private String password;
     private Role role;
-    private boolean isActive;
-    private boolean isVerified;
     private String name;
     private String surname;
     private String dateOfBirth;
     private String createdAt;
+    private boolean isActive;
+    private boolean isVerified;
 }

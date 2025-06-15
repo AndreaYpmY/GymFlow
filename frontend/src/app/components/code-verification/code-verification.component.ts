@@ -3,6 +3,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { UserRole } from '../../services/types';
 
 
 
@@ -14,13 +16,13 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
   imports: [CommonModule, ReactiveFormsModule, RouterModule]
 })
 export class CodeVerificationComponent {
-  @Output() codeVerified = new EventEmitter<{code: string, role: string}>(); // Emette un evento con il codice e il ruolo
+  @Output() codeVerified = new EventEmitter<{email: string, role: string}>(); // Emette un evento con il codice e il ruolo
   
   codeForm: FormGroup;
   isLoading = false;
   errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.codeForm = this.fb.group({
       code: ['', [Validators.required, Validators.minLength(6)]]
     });
@@ -32,9 +34,24 @@ export class CodeVerificationComponent {
       this.errorMessage = '';
       
       const code = this.codeForm.value.code;
-
       
-      // Simulazione verifica codice
+      this.authService.verifyRegistrationCode(code).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          console.log('Codice verificato con successo:', response);
+          if(response.role != null){
+            this.codeVerified.emit({ email: response.email, role: response.role });
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Errore durante la verifica del codice:', error);
+          this.errorMessage = 'Codice non valido. Contatta l\'amministratore.';
+        }
+      });
+      
+      
+      /*Simulazione verifica codice
       setTimeout(() => {
         this.isLoading = false;
         
@@ -52,7 +69,7 @@ export class CodeVerificationComponent {
         } else {
           this.errorMessage = 'Codice non valido. Contatta l\'amministratore.';
         }
-      }, 1000);
+      }, 1000);*/
     } else {
       this.markFormGroupTouched();
     }
@@ -65,5 +82,6 @@ export class CodeVerificationComponent {
     });
   }
 
-  get code() { return this.codeForm.get('code'); }
+  get getCode() { return this.codeForm.get('code'); }
+  get getEmail() { return this.codeForm.get('email');}
 }

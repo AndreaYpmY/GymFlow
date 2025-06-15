@@ -1,19 +1,19 @@
 package com.example.backend.service;
 
-import com.example.backend.enums.Role;
-import com.example.backend.model.dto.Client;
-import com.example.backend.model.entity.ClientEntity;
-import com.example.backend.model.entity.TrainerEntity;
+import com.example.backend.model.dto.request.FinishRegistrationRequest;
+import com.example.backend.model.dto.response.UserProfile;
 import com.example.backend.model.entity.UserEntity;
 import com.example.backend.repository.ClientRepository;
 import com.example.backend.repository.TrainerRepository;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.security.JwtService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 public class UserService {
@@ -22,125 +22,102 @@ public class UserService {
     private final TrainerRepository trainerRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, ClientRepository clientRepository, TrainerRepository trainerRepository, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository, JwtService jwtService, ClientRepository clientRepository, TrainerRepository trainerRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.trainerRepository = trainerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
+
     @Transactional
-    public UserEntity registerUser(UserEntity user) {
+    public ResponseEntity<UserProfile> updateUserProfile(UserProfile userProfile, String token) {
+        String email = jwtService.extractUsername(token);
 
-        if (userRepository.existsByFiscalCode(user.getFiscalCode())) {
-            throw new IllegalArgumentException("Fiscal code already exists");
-        }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-
-
-
-        // Cripta la password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setCreatedAt(LocalDateTime.now());
-        user.setActive(true);
-        user.setVerified(false);
-
-
-
-        // Salva l'utente
-        UserEntity savedUser = userRepository.save(user);
-
-        // Crea entità associata in base al ruolo
-        switch (user.getRole()) {
-            case CLIENT:
-                ClientEntity client = new ClientEntity();
-                client.setUser(savedUser);
-                clientRepository.save(client);
-                break;
-            case TRAINER:
-                TrainerEntity trainer = new TrainerEntity();
-                trainer.setUser(savedUser);
-                trainerRepository.save(trainer);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid role");
-        }
-        return savedUser;
-    }
-    @Transactional(readOnly = true)
-    public UserEntity loginUser(String email, String password) {
         UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-        return user;
+
+        // Aggiorno i campi dell'utente
+        user.setName(userProfile.getName());
+        user.setSurname(userProfile.getSurname());
+        user.setDateOfBirth(LocalDate.parse(userProfile.getDateOfBirth()));
+        user.setPassword(passwordEncoder.encode(userProfile.getPassword()));
+        user.setFiscalCode(userProfile.getFiscalCode());
+
+        // Salvo l'utente aggiornato
+        UserEntity updatedUser = userRepository.save(user);
+
+        UserProfile updatedUserProfile = new UserProfile(
+                updatedUser.getEmail(),
+                updatedUser.getName(),
+                "", // Non restituisco la password per motivi di sicurezza
+                updatedUser.getSurname(),
+                updatedUser.getDateOfBirth().toString(),
+                updatedUser.getFiscalCode(),
+                updatedUser.getRole().name()
+        );
+
+        return ResponseEntity.ok(updatedUserProfile);
     }
 
+
+
+
+
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<UserProfile> getUser(String token){
+        String email = jwtService.extractUsername(token);
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        UserProfile userProfile = new UserProfile(
+                user.getEmail(),
+                user.getName(),
+                "", // Non restituisco la password per motivi di sicurezza
+                user.getSurname(),
+                user.getDateOfBirth().toString(),
+                user.getFiscalCode(),
+                user.getRole().name()
+        );
+
+        return ResponseEntity.ok(userProfile);
+    }
+
+
+    //Inserito qui poichè avrà già il token di autenticazione perchè viene dato se conosce quel codice segreto
     @Transactional
-    public UserEntity updateUser(Long userId, String newFiscalCode, String name, String surname, LocalDate dateOfBirth, String newPassword) {
+    public ResponseEntity<Void> finishRegistration(FinishRegistrationRequest fields, String token){
+        try{
+            String email = jwtService.extractUsername(token);
+            UserEntity user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid registration code"));
 
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+            //System.out.println(fields);
 
-        // Verifico il nuovo fiscalCode
-        if (newFiscalCode != null && !newFiscalCode.equals(user.getFiscalCode())) {
+            // Aggiorno i campi dell'utente
+            user.setName(fields.getName());
+            user.setSurname(fields.getSurname());
+            user.setDateOfBirth(LocalDate.parse(fields.getDateOfBirth()));
+            user.setPassword(passwordEncoder.encode(fields.getPassword()));
 
-            if (userRepository.existsByFiscalCode(newFiscalCode)) {
-                throw new IllegalArgumentException("Fiscal code already exists: " + newFiscalCode);
-            }
-            // Validazione formato fiscalCode
-            //if (!newFiscalCode.matches("^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$")) {
-            //    throw new IllegalArgumentException("Invalid fiscal code format");
-            //}
-            user.setFiscalCode(newFiscalCode);
+            user.setRegistrationCode(null);
+
+            // Salvo l'utente aggiornato
+            UserEntity updatedUser = userRepository.save(user);
+
+            return ResponseEntity.noContent().build();
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
-        // Aggiorna gli altri campi se forniti
-        if (name != null) {
-            user.setName(name);
-        }
-        if (surname != null) {
-            user.setSurname(surname);
-        }
-        if (dateOfBirth != null) {
-            user.setDateOfBirth(dateOfBirth);
-        }
-
-        // Aggiorna la password
-        if (newPassword != null) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-        }
-
-
-        // Salva l'utente aggiornato
-        return userRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public UserEntity getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-    }
 
-    @Transactional(readOnly = true)
-    public ClientEntity getClientByEmail(String email) {
-        return clientRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
-    }
 
-    @Transactional(readOnly = true)
-    public TrainerEntity getTrainerByEmail(String email) {
-        return trainerRepository.findByUserEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Trainer not found"));
-    }
-
-    @Transactional(readOnly = true)
-    public UserEntity getUserByFiscalCode(String fiscalCode) {
-        return userRepository.findByFiscalCode(fiscalCode)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-    }
 }

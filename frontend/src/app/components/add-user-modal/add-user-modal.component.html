@@ -1,0 +1,199 @@
+@if (showModal) {
+    <div class="modal-overlay" (click)="close()" [class.preventing-close]="addingUser">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>
+            <span class="modal-icon">👤</span>
+            Aggiungi Nuovo Utente
+          </h3>
+          <button 
+            class="modal-close" 
+            (click)="close()"
+            [disabled]="addingUser"
+            title="Chiudi"
+          >
+            ✕
+          </button>
+        </div>
+  
+        <div class="modal-body">
+          <form [formGroup]="addUserForm" (ngSubmit)="onSubmit()" novalidate>
+            
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email">
+                <span class="field-icon">✉️</span>
+                Email *
+              </label>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="utente@esempio.com"
+                autocomplete="email"
+                [class.invalid]="addUserForm.get('email')?.invalid && addUserForm.get('email')?.touched"
+              />
+              @if (addUserForm.get('email')?.invalid && addUserForm.get('email')?.touched) {
+                <div class="error-message">
+                  <span>{{ getFieldError('email') }}</span>
+                </div>
+              }
+            </div>
+  
+            <!-- Codice Fiscale -->
+            <div class="form-group">
+              <label for="fiscalCode">
+                <span class="field-icon">🆔</span>
+                Codice Fiscale *
+              </label>
+              <input
+                type="text"
+                id="fiscalCode"
+                class="form-control fiscal-code-input"
+                formControlName="fiscalCode"
+                placeholder="RSSMRA80A01H501X"
+                maxlength="16"
+                (input)="onFiscalCodeInput($event)"
+                [class.invalid]="addUserForm.get('fiscalCode')?.invalid && addUserForm.get('fiscalCode')?.touched"
+              />
+              @if (addUserForm.get('fiscalCode')?.invalid && addUserForm.get('fiscalCode')?.touched) {
+                <div class="error-message">
+                  <span>{{ getFieldError('fiscalCode') }}</span>
+                </div>
+              }
+            </div>
+  
+            <!-- Ruolo -->
+            <div class="form-group">
+              <label for="role">
+                <span class="field-icon">👔</span>
+                Ruolo *
+              </label>
+              <select
+                id="role"
+                class="form-control select-control"
+                formControlName="role"
+                [class.invalid]="addUserForm.get('role')?.invalid && addUserForm.get('role')?.touched"
+              >
+                <option value="" disabled>Seleziona un ruolo</option>
+                @for (option of roleOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+              @if (addUserForm.get('role')?.invalid && addUserForm.get('role')?.touched) {
+                <div class="error-message">
+                  <span>{{ getFieldError('role') }}</span>
+                </div>
+              }
+            </div>
+  
+            <!-- Campi specifici per CLIENT -->
+            @if (isClient) {
+              <div class="role-specific-section client-section">
+                <div class="section-header">
+                  <h4><span class="section-icon">📅</span> Informazioni Cliente</h4>
+                </div>
+                
+                <div class="form-group">
+                  <label for="subscriptionEndDate">
+                    <span class="field-icon">⏰</span>
+                    Scadenza Abbonamento *
+                  </label>
+                  <input
+                    type="date"
+                    id="subscriptionEndDate"
+                    class="form-control"
+                    formControlName="subscriptionEndDate"
+                    [min]="getTomorrowDate()"
+                    [class.invalid]="addUserForm.get('subscriptionEndDate')?.invalid && addUserForm.get('subscriptionEndDate')?.touched"
+                    />
+                    @if (addUserForm.get('subscriptionEndDate')?.invalid && addUserForm.get('subscriptionEndDate')?.touched) {
+                        <div class="error-message">
+                      <span>{{ getFieldError('subscriptionEndDate') }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+  
+            <!-- Campi specifici per TRAINER -->
+            @if (isTrainer && addUserForm.get('weeklyHours')) {
+                <div class="role-specific-section trainer-section">
+                <div class="section-header">
+                  <h4><span class="section-icon">🕐</span> Ore Lavorative Settimanali</h4>
+                  <div class="weekly-total">
+                    Totale: <strong>{{ totalWeeklyHours }}h</strong>
+                  </div>
+                </div>
+                
+                <div formGroupName="weeklyHours" class="weekly-hours-grid">
+                  @for (day of daysOrder; track day) {
+                    <div class="day-input-group">
+                      <label class="day-label">{{ dayLabels[day] }}</label>
+                      <div class="hours-input-wrapper">
+                        <input
+                          type="number"
+                          [formControlName]="day"
+                          class="form-control hours-input"
+                          min="0"
+                          max="24"
+                          step="0.5"
+                          (input)="onHoursInput($event, day)"
+                          [class.invalid]="addUserForm.get('weeklyHours.' + day)?.invalid && addUserForm.get('weeklyHours.' + day)?.touched"
+                        />
+                        <span class="hours-label">ore</span>
+                      </div>
+                      @if (addUserForm.get('weeklyHours.' + day)?.invalid && addUserForm.get('weeklyHours.' + day)?.touched) {
+                        <div class="error-message small">
+                            <span>{{ getFieldError('weeklyHours.' + day) }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+  
+                @if (totalWeeklyHours > 40) {
+                  <div class="warning-message">
+                    <span class="warning-icon">⚠️</span>
+                    Il totale supera le 40 ore settimanali standard
+                  </div>
+                }
+              </div>
+            }
+  
+
+  
+            <!-- Form Actions -->
+            <div class="modal-actions">
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="close()"
+                [disabled]="addingUser"
+              >
+                <span class="btn-icon">❌</span>
+                Annulla
+              </button>
+              
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="addUserForm.invalid || addingUser"
+              >
+                @if (addingUser) {
+                  <span class="btn-icon spinning">⏳</span>
+                  <span>Creazione in corso...</span>
+                } @else {
+                  <span class="btn-icon">➕</span>
+                  <span>Crea Utente</span>
+                }
+              </button>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+  

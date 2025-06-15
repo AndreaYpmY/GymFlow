@@ -1,0 +1,239 @@
+<div class="user-management-container">
+    <div class="management-header">
+      <h2>Gestione Utenti</h2>
+      <button class="btn btn-primary" (click)="openAddUserModal()">
+        <i class="icon-plus"></i>
+        Aggiungi Utente
+      </button>
+    </div>
+  
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input
+            type="text"
+            class="search-input"
+            placeholder="Cerca per nome, cognome, email o codice fiscale..."
+            [value]="searchTerm"
+            (input)="onSearchChange($any($event.target).value)"
+        />
+        <i class="search-icon">🔍</i>
+      </div>
+  
+      <!-- Filter Controls -->
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label>Ruolo:</label>
+          <select [(ngModel)]="filters.role" (change)="onFilterChange()" class="filter-select">
+            @for (role of roles; track role.value) {
+              <option [value]="role.value">{{ role.label }}</option>
+            }
+          </select>
+        </div>
+  
+        <div class="filter-group">
+          <label>Stato:</label>
+          <select [(ngModel)]="filters.isActive" (change)="onFilterChange()" class="filter-select">
+            @for (option of activeOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+  
+        <div class="filter-group">
+          <label>Verifica:</label>
+          <select [(ngModel)]="filters.isVerified" (change)="onFilterChange()" class="filter-select">
+            @for (option of verifiedOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+  
+        <button class="btn btn-secondary" (click)="clearFilters()">
+          Cancella Filtri
+        </button>
+      </div>
+    </div>
+  
+    <!-- Results Info -->
+    <div class="results-info">
+      <span>Mostrando {{ users.length }} di {{ totalUsers }} utenti</span>
+      <div class="page-size-selector">
+        <label>Elementi per pagina:</label>
+        <select [value]="pageSize" (change)="onPageSizeChange(+($any($event.target).value))" class="page-size-select">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
+  
+    <!-- Loading Spinner -->
+    @if (loading) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <span>Caricamento...</span>
+      </div>
+    }
+  
+    <!-- Users Table -->
+    @if (!loading) {
+      <div class="table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Nome Completo</th>
+              <th>Email</th>
+              <th>Codice Fiscale</th>
+              <th>Data di Nascita</th>
+              <th>Ruolo</th>
+              <th>Cod. Registrazione</th>
+              <th>Stato</th>
+              <th>Verificato</th>
+              <th>Data Registrazione</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users; track user.id) {
+              <tr class="user-row">
+                <td class="user-name">{{ user.name }} {{ user.surname }}</td>
+                <td class="user-email">{{ user.email }}</td>
+                <td class="fiscal-code">{{ user.fiscalCode }}</td>
+                <td class="birth-date">{{ user.dateOfBirth | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="role-badge" [ngClass]="getRoleClass(user.role)">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td class="registration-code">{{ user.registrationCode }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(user.active)">
+                    {{ user.active ? 'Attivo' : 'Disattivato' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="verification-badge" [ngClass]="getVerificationClass(user.verified)">
+                    {{ user.verified ? '✓' : '✗' }}
+                  </span>
+                </td>
+                <td class="created-date">{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td class="actions">
+                  <button 
+                    class="btn btn-sm"
+                    [ngClass]="user.active ? 'btn-warning' : 'btn-success'"
+                    (click)="toggleUserStatus(user)"
+                    [disabled]="loading">
+                    {{ user.active ? 'Disattiva' : 'Attiva' }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+  
+        <!-- Empty State -->
+        @if (users.length === 0) {
+          <div class="empty-state">
+            <p>Nessun utente trovato con i filtri applicati.</p>
+          </div>
+        }
+      </div>
+    }
+  
+    <!-- Pagination -->
+    @if (!loading && totalPages > 1) {
+      <div class="pagination-container">
+        <div class="pagination">
+          <button 
+            class="btn btn-secondary btn-sm"
+            [disabled]="currentPage === 1"
+            (click)="onPageChange(currentPage - 1)">
+            Precedente
+          </button>
+          
+          <span class="page-info">
+            Pagina {{ currentPage }} di {{ totalPages }}
+          </span>
+          
+          <button 
+            class="btn btn-secondary btn-sm"
+            [disabled]="currentPage === totalPages"
+            (click)="onPageChange(currentPage + 1)">
+            Successiva
+          </button>
+        </div>
+      </div>
+    }
+
+    <app-add-user-modal
+    [showModal]="showAddUserModal"
+    [roleOptions]="roleOptions"
+    (closeModal)="closeAddUserModal()"
+    (createUser)="onCreateUser($event)"
+  ></app-add-user-modal>
+
+   <!-- Registration Code Popup -->
+   @if (showRegistrationCodePopup) {
+    <div class="popup-overlay" (click)="closeRegistrationCodePopup()">
+      <div class="popup-content" (click)="$event.stopPropagation()">
+        <div class="popup-header">
+          <h4>
+            <span class="success-icon">✅</span>
+            Utente creato con successo!
+          </h4>
+          <button
+            class="popup-close"
+            (click)="closeRegistrationCodePopup()"
+            title="Chiudi"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="popup-body">
+          <div class="code-display">
+            <label>Codice di Registrazione:</label>
+            <div class="code-wrapper">
+              <code class="registration-code">{{ newUserRegistrationCode }}</code>
+              <button
+                type="button"
+                class="copy-button"
+                (click)="copyRegistrationCode()"
+                title="Copia codice"
+              >
+                📋
+              </button>
+            </div>
+          </div>
+          <div class="code-instructions">
+            <div class="instruction-item">
+              <span class="instruction-icon">🔐</span>
+              <span>Comunica questo codice all'utente di persona</span>
+            </div>
+            <div class="instruction-item">
+              <span class="instruction-icon">📱</span>
+              <span>L'utente lo userà per completare la registrazione</span>
+            </div>
+          </div>
+        </div>
+        <div class="popup-actions">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="closeRegistrationCodePopup()"
+          >
+            <span class="btn-icon">✅</span>
+            OK
+          </button>
+        </div>
+      </div>
+      </div>
+    }
+  </div>
+
+
+  
+  
+  
