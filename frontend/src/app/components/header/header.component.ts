@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { UserRole } from '../../services/types';
+import { UserRole } from '../../model/auth-types';
 import { AuthService } from '../../services/auth.service';
 
 
@@ -105,6 +105,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(route: string): void {
+    //console.log('Navigating to:', route, 'Authenticated:', this.isAuthenticated);
+    if (!this.isAuthenticated && (route === '/notices' || route === '/bookings')) {
+      this.router.navigate(['/login']);
+      this.closeMobileMenu();
+      //console.log('User not authenticated, redirecting to login');
+      return;
+    }
     this.router.navigate([route]);
     this.closeMobileMenu();
   }

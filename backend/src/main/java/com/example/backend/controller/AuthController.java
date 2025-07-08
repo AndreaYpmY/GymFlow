@@ -6,7 +6,7 @@ import com.gymflow.dto.RegisterRequest;
 import com.gymflow.dto.RegisterResponse;
 import com.gymflow.service.JwtService;
 import com.gymflow.service.UserService;*/
-import com.example.backend.model.dto.LoginRequest;
+import com.example.backend.model.dto.request.LoginRequest;
 import com.example.backend.model.dto.response.VerifyCodeResponse;
 import com.example.backend.service.AuthService;
 import org.springframework.http.ResponseEntity;

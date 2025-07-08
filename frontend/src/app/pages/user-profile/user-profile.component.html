@@ -24,6 +24,18 @@
         (click)="setActiveTab('user-management')">
         Gestione Utenti
       </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'subscription-management'"
+        (click)="setActiveTab('subscription-management')">
+        Gestione Abbonamenti
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'trainer-schedules'"
+        (click)="setActiveTab('trainer-schedules')">
+        Gestione Orari Trainer
+      </button>
     }
 
     @if (isTrainer()) {
@@ -53,12 +65,23 @@
     @if (activeTab === 'user-management' && isAdmin()) {
       <app-user-management></app-user-management>
     }
+    
+    @if (activeTab === 'subscription-management' && isAdmin()) {
+      <app-subscription-management></app-subscription-management>
+    }
+    
+    @if (activeTab === 'trainer-schedules' && isAdmin()) {
+      <app-trainer-schedules></app-trainer-schedules>
+  }
+
+
 
     @if (activeTab === 'trainer-area') {
       <div class="coming-soon">
         Area Trainer - In sviluppo
       </div>
     }
+    
 
     @if (activeTab === 'client-area') {
       <div class="coming-soon">

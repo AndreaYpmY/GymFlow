@@ -1,0 +1,110 @@
+<div class="subscription-management">
+    <div class="header-section">
+      <h2>Gestione Abbonamenti Clienti</h2>
+      <div class="filters">
+        <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+          <option value="">Tutti gli stati</option>
+          <option value="active">Attivi</option>
+          <option value="expiring_soon">In scadenza</option>
+          <option value="expired">Scaduti</option>
+        </select>
+        
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="applyFilters()"
+          placeholder="Cerca cliente..."
+          class="search-input">
+      </div>
+    </div>
+
+    <div class="subscriptions-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Email</th>
+            <th>Data Scadenza</th>
+            <th>Giorni Rimanenti</th>
+            <th>Stato</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (subscription of filteredSubscriptions; track subscription.id) {
+            <tr [class]="'status-' + subscription.status">
+              <td>
+                <div class="client-info">
+                  <span class="client-name">{{ subscription.clientName }} {{ subscription.clientSurname }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="client-info">{{ subscription.email }}</span>
+              </td>
+              <td>{{ subscription.endDate | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span [class]="getDaysRemainingClass(subscription)">
+                  {{ getDaysRemaining(subscription) }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [class]="'status-' + subscription.status">
+                  {{ getStatusLabel(subscription.status) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button 
+                    class="btn-edit" 
+                    (click)="editSubscription(subscription)">
+                    Modifica
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="no-data">Nessun abbonamento trovato</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal per modifica abbonamento -->
+    @if (showEditModal) {
+      <div class="modal-overlay" (click)="closeEditModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>Modifica Abbonamento</h3>
+            <button class="close-btn" (click)="closeEditModal()">×</button>
+          </div>
+          
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Cliente</label>
+              <input 
+                class="date-input"
+                type="text" 
+                [value]="selectedSubscription?.clientName + ' ' + selectedSubscription?.clientSurname"
+                readonly>
+            </div>
+            
+            <div class="form-group">
+              <label>Data Scadenza</label>
+              <input 
+                class="date-input"
+                type="date" 
+                [(ngModel)]="editForm.endDate">
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeEditModal()">Annulla</button>
+            <button class="btn-save" (click)="saveSubscription()">Salva</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  

@@ -1,0 +1,49 @@
+<div class="notice-card" [class.important]="notice.important">
+    <!-- Badge importante -->
+    @if (notice.important) {
+      <div class="important-badge">
+        <i class="icon-star">⭐</i>
+        <span>Importante</span>
+      </div>
+    }
+
+    <!-- Header con titolo e azioni admin -->
+    <div class="notice-header">
+      <h3 class="notice-title">{{ notice.title }}</h3>
+      @if (userRole === UserRole.ADMIN) {
+        <button 
+          class="delete-btn" 
+          (click)="onDelete()"
+          title="Elimina avviso">
+          <i class="icon-trash">🗑️</i>
+        </button>
+      }
+    </div>
+
+    <!-- Descrizione -->
+    <p class="notice-description">{{ notice.description }}</p>
+
+    <!-- Footer con data e like -->
+    <div class="notice-footer">
+      <span class="notice-date">
+        <i class="icon-calendar">📅</i>
+        {{ notice.createdAt | date:'dd/MM/yyyy' }}
+      </span>
+      
+      @if (userRole !== UserRole.ADMIN) {
+        <button 
+          class="like-btn" 
+          [class.liked]="notice.likedByCurrentUser"
+          (click)="onLike()"
+          title="Mi piace">
+          <i class="icon-heart">{{ notice.likedByCurrentUser ? '❤️' : '🤍' }}</i>
+          <span>{{ notice.likes }}</span>
+        </button>
+      } @else {
+        <span class="like-count">
+          <i class="icon-heart">❤️</i>
+          <span>{{ notice.likes }}</span>
+        </span>
+      }
+    </div>
+  </div>

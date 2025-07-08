@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
-import { UserForAdmin, PaginatedResponse, UserFormData } from '../../services/types';
+import { UserForAdmin, PaginatedUsersResponse, UserFormData } from '../../model/auth-types';
 import { UserService } from '../../services/user.service';
 import { AdminService } from '../../services/admin.service';
 import { AddUserModalComponent } from '../../components/add-user-modal/add-user-modal.component';
@@ -150,7 +150,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     });
 
     this.adminService.getUsers(params).subscribe({ 
-       next: (response: PaginatedResponse) => {
+       next: (response: PaginatedUsersResponse) => {
          this.users = response.content;
          this.totalUsers = response.totalElements;
          this.totalPages = response.totalPages;

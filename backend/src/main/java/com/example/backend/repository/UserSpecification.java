@@ -22,7 +22,8 @@ public class UserSpecification {
                 predicates.add(cb.or(
                         cb.like(cb.lower(root.get("name")), searchLower),
                         cb.like(cb.lower(root.get("surname")), searchLower),
-                        cb.like(cb.lower(root.get("email")), searchLower)
+                        cb.like(cb.lower(root.get("email")), searchLower),
+                        cb.like(cb.lower(root.get("fiscalCode")), searchLower)
                 ));
             }
 

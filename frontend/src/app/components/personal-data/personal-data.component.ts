@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, Output, SimpleChanges,EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { UserProfile } from '../../services/types';
+import { UserProfile } from '../../model/auth-types';
 import { AuthService } from '../../services/auth.service';
 
 @Component({

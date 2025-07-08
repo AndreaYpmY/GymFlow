@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
-import { User, UserRole, LoginResponse, RegisterResponse, UserProfile, VerificationCodeResponse, finishRegistrationUserRequest } from './types'; // Si poteva creare una cartella model
+import { User, UserRole, LoginResponse, RegisterResponse, UserProfile, VerificationCodeResponse, finishRegistrationUserRequest } from '../model/auth-types'; // Si poteva creare una cartella model
 
 @Injectable({
   providedIn: 'root'

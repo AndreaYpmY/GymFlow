@@ -1,8 +1,6 @@
 package com.example.backend.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,8 +16,8 @@ public class ClientEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "client")
-    private List<ReservationEntity> reservations; // lista di prenotazioni
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookingEntity> bookings; // lista di prenotazioni
 
     @ManyToMany(mappedBy = "clients")
     private List<WorkoutPlanEntity> workoutPlans; // lista di piani di allenamento
@@ -33,9 +31,15 @@ public class ClientEntity {
         // Default constructor
     }
 
+    public ClientEntity(Long id, UserEntity user, List<BookingEntity> bookings, List<WorkoutPlanEntity> workoutPlans, LocalDate subscriptionEndDate) {
+        this.id = id;
+        this.user = user;
+        this.bookings = bookings;
+        this.workoutPlans = workoutPlans;
+        this.subscriptionEndDate = subscriptionEndDate;
+    }
 
-
-    public ClientEntity(UserEntity user,  LocalDate subscriptionEndDate) {
+    public ClientEntity(UserEntity user, LocalDate subscriptionEndDate) {
         this.user = user;
         this.subscriptionEndDate = subscriptionEndDate;
     }
@@ -56,12 +60,12 @@ public class ClientEntity {
         this.user = user;
     }
 
-    public List<ReservationEntity> getReservations() {
-        return reservations;
+    public List<BookingEntity> getBookings() {
+        return bookings;
     }
 
-    public void setReservations(List<ReservationEntity> reservations) {
-        this.reservations = reservations;
+    public void setBookings(List<BookingEntity> bookings) {
+        this.bookings = bookings;
     }
 
     public List<WorkoutPlanEntity> getWorkoutPlans() {

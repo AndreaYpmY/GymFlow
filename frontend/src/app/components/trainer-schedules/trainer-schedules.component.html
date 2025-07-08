@@ -1,0 +1,118 @@
+<div class="trainer-schedules">
+    <div class="header-section">
+      <h2>Gestione Orari Trainer</h2>
+      <div class="filters">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="applyFilter()"
+          placeholder="Cerca trainer..."
+          class="search-input"
+        />
+      </div>
+    </div>
+  
+    <div class="trainers-grid">
+      @for (trainer of filteredTrainers; track trainer.id) {
+        <div class="trainer-card">
+          <div class="trainer-header">
+            <div class="trainer-info">
+              <h3>{{ trainer.trainerName }} {{ trainer.trainerSurname }}</h3>
+              <span class="trainer-email">{{ trainer.email }}</span>
+            </div>
+            <button
+              class="btn-edit-schedule"
+              (click)="editTrainerSchedule(trainer)"
+            >
+              Modifica Orari
+            </button>
+          </div>
+  
+          <div class="schedule-preview">
+            <div class="schedule-grid">
+              @for (day of getDaysOfWeek(); track day.key) {
+                <div class="day-schedule">
+                  <div class="day-name">{{ day.label }}</div>
+                  <div
+                    class="time-info"
+                    [class.active]="trainer.schedules[day.key].isActive"
+                  >
+                    @if (trainer.schedules[day.key].isActive) {
+                      <span class="time-slot">
+                        {{ formatHours(trainer.schedules[day.key].hours) }}
+                      </span>
+                    } @else {
+                      <span class="closed">Nessuna ora</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="no-trainers">
+          <p>Nessun trainer trovato</p>
+        </div>
+      }
+    </div>
+  
+    <!-- Modal per modifica orari -->
+    @if (showEditModal) {
+      <div class="modal-overlay" (click)="closeEditModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>
+              Modifica Orari - {{ selectedTrainer?.trainerName }}
+              {{ selectedTrainer?.trainerSurname }}
+            </h3>
+            <button class="close-btn" (click)="closeEditModal()">×</button>
+          </div>
+  
+          <div class="modal-body">
+            <div class="schedule-form">
+              @for (day of getDaysOfWeek(); track day.key) {
+                <div class="day-form-group">
+                  <div class="day-header">
+                    <label class="day-label">{{ day.label }}</label>
+                    <div class="day-toggle">
+                        <input
+                        type="checkbox"
+                        [ngModel]="editForm[day.key].isActive"
+                        (ngModelChange)="updateDayIsActive(day.key, $event)"
+                        [id]="'active-' + day.key"
+                      />
+                      <label [for]="'active-' + day.key">Attivo</label>
+                    </div>
+                  </div>
+  
+                  @if (editForm[day.key].isActive) {
+                    <div class="hours-input">
+                      <div class="hours-input-group">
+                        <label>Ore di lavoro</label>
+                        <input
+                          type="number"
+                          [ngModel]="editForm[day.key].hours"
+                          (ngModelChange)="updateDayHours(day.key, $event)"
+                          min="0"
+                          max="12"
+                          step="0.5"
+                          class="hours-input"
+                          placeholder="Es. 8"
+                        />
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+  
+          <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeEditModal()">Annulla</button>
+            <button class="btn-save" (click)="saveSchedule()">Salva Orari</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>

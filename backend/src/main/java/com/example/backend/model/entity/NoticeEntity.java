@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 //@Getter @Setter
 
 @Entity
@@ -21,7 +23,7 @@ public class NoticeEntity {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime date = LocalDateTime.now();
+    private LocalDate date ;
 
     @Column(nullable = false)
     private boolean isActive = true;
@@ -29,20 +31,39 @@ public class NoticeEntity {
     @ManyToOne
     private UserEntity author;
 
-    @Enumerated(EnumType.STRING) @Column(nullable = false)
-    private NoticeTarget target;
+    @Column(nullable = false)
+    private boolean important;
 
+    @Column(nullable = false)
+    private Integer likes = 0;
 
     // Non funziona lombok
 
     public NoticeEntity() {
     }
 
-    public NoticeEntity(String title, String description, UserEntity author, NoticeTarget target) {
+    public NoticeEntity(String title, String description, UserEntity author,boolean important) {
         this.title = title;
         this.description = description;
         this.author = author;
-        this.target = target;
+        this.important = important;
+        this.date = LocalDate.now();
+    }
+
+    public boolean isImportant() {
+        return important;
+    }
+
+    public void setImportant(boolean important) {
+        this.important = important;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
     }
 
     public Long getId() {
@@ -69,11 +90,11 @@ public class NoticeEntity {
         this.description = description;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -93,16 +114,16 @@ public class NoticeEntity {
         this.author = author;
     }
 
-    public NoticeTarget getTarget() {
-        return target;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NoticeEntity that = (NoticeEntity) o;
+        return Objects.equals(id, that.id);
     }
 
-    public void setTarget(NoticeTarget target) {
-        this.target = target;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
-
-
-
-
-
 }

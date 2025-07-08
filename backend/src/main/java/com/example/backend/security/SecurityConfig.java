@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()                // Accesso pubblico per login/registrazione
+                        .requestMatchers("/api/notices/important/top").permitAll()  // Accesso pubblico (nella home page)
+                        .requestMatchers("/api/notices/**").authenticated()         // Tutte le altre richieste richiedono autenticazione
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")          // Solo Admin
                         .requestMatchers("/api/trainer/**").hasRole("TRAINER")      // Solo Trainer
                         .requestMatchers("/api/client/**").hasRole("CLIENT")        // Solo Client
@@ -64,7 +66,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:40101"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:36915"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
         configuration.setAllowCredentials(true);

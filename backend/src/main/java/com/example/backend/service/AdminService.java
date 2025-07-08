@@ -2,7 +2,9 @@ package com.example.backend.service;
 
 import com.example.backend.enums.Role;
 import com.example.backend.model.dto.request.CreateUserRequest;
+import com.example.backend.model.dto.response.ClientSubscriptionResponse;
 import com.example.backend.model.dto.response.RegistrationForAdmin;
+import com.example.backend.model.dto.response.TrainerScheduleResponse;
 import com.example.backend.model.dto.response.UserForAdmin;
 import com.example.backend.model.entity.ClientEntity;
 import com.example.backend.model.entity.TrainerEntity;
@@ -21,7 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -95,8 +100,74 @@ public class AdminService {
     }
 
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<ClientSubscriptionResponse>> getClientsSubscription() {
+        List<ClientSubscriptionResponse> subscriptions = clientRepository.findAll().stream()
+                .map(client -> new ClientSubscriptionResponse(
+                        client.getId(),
+                        client.getUser().getEmail(),
+                        client.getUser().getName(),
+                        client.getUser().getSurname(),
+                        client.getSubscriptionEndDate()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(subscriptions);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> setClientSubscriptionEndDate(String email, LocalDate newEndDate) {
+        ClientEntity client = clientRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found with email: " + email));
+
+        client.setSubscriptionEndDate(LocalDate.from(newEndDate));
+        clientRepository.save(client);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<TrainerScheduleResponse>> getTrainersSchedule() {
+
+        List<TrainerScheduleResponse> trainerSchedules = trainerRepository.findAll().stream()
+                .map(trainer -> new TrainerScheduleResponse(
+                        trainer.getId(),
+                        trainer.getUser().getName(),
+                        trainer.getUser().getSurname(),
+                        trainer.getUser().getEmail(),
+                        trainer.getMonday(),
+                        trainer.getTuesday(),
+                        trainer.getWednesday(),
+                        trainer.getThursday(),
+                        trainer.getFriday(),
+                        trainer.getSaturday())
+                )
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(trainerSchedules);
+
+    }
+
+    @Transactional
+    public ResponseEntity<Void> setTrainerWorkingHours(TrainerScheduleResponse trainerScheduleResponse) {
+        TrainerEntity trainer = trainerRepository.findByEmail(trainerScheduleResponse.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Trainer not found with email: " + trainerScheduleResponse.getEmail()));
+
+        trainer.setMonday(trainerScheduleResponse.getSchedules().get("monday"));
+        trainer.setTuesday(trainerScheduleResponse.getSchedules().get("tuesday"));
+        trainer.setWednesday(trainerScheduleResponse.getSchedules().get("wednesday"));
+        trainer.setThursday(trainerScheduleResponse.getSchedules().get("thursday"));
+        trainer.setFriday(trainerScheduleResponse.getSchedules().get("friday"));
+        trainer.setSaturday(trainerScheduleResponse.getSchedules().get("saturday"));
+
+        // Salvo il trainer aggiornato
+        trainerRepository.save(trainer);
+
+        return ResponseEntity.ok().build();
+    }
 
 
+    @Transactional(readOnly = true)
     public Page<UserForAdmin> getUsersPageable(String search, String role, Boolean isActive, Boolean isVerified, int page, int limit) {
         Pageable pageable = PageRequest.of(page, limit);
         Specification<UserEntity> spec = UserSpecification.filterUsers(search, role, isActive, isVerified);

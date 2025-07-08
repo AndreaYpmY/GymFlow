@@ -1,0 +1,727 @@
+/* ===== CONTAINER PRINCIPALE ===== */
+.gym-booking-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: calc(100vh - 80px);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.header h1 {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.user-role {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.role-ADMIN {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.role-TRAINER {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.role-CLIENT {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+/* ===== LAYOUT PRINCIPALE ===== */
+.main-content {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ===== SEZIONE CALENDARIO ===== */
+.calendar-section {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  height: fit-content;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+}
+
+.calendar-day.clickable:hover {
+  background-color: #eff6ff;
+  transform: scale(1.05);
+}
+
+.calendar-day.other-month {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.calendar-day.selected {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.calendar-day.today {
+  background-color: #dbeafe;
+  color: #2563eb;
+  font-weight: 600;
+  border: 2px solid #2563eb;
+}
+
+.calendar-day.today.selected {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.calendar-day.has-bookings::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background-color: #10b981;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+}
+
+.calendar-day.past {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.calendar-day.past:hover {
+  background-color: transparent;
+  transform: none;
+}
+
+/* ===== SEZIONE SCHEDULE ===== */
+.schedule-section {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.schedule-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  text-transform: capitalize;
+}
+
+.day-status {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.day-status.closed {
+  background-color: #ef4444;
+}
+
+/* ===== PANNELLO ADMIN ===== */
+.admin-panel {
+  background-color: #f9fafb;
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.admin-controls {
+  margin-top: 16px;
+}
+
+.admin-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.slot-action-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.slot-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.admin-help {
+  background-color: #eff6ff;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #2563eb;
+  margin-top: 16px;
+}
+
+.admin-help p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.admin-help p:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== SLOT TEMPORALI ===== */
+.time-slots {
+  display: grid;
+  gap: 16px;
+}
+
+.time-slot {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+
+.time-slot:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.time-slot.full {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.time-slot.unavailable {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+  opacity: 0.8;
+}
+
+.time-slot.disabled {
+  border-color: #f59e0b;
+  background-color: #fef3c7;
+}
+
+.time-slot.selected {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.time-slot.user-booked {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.time-slot.past {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.time-slot.admin-selectable {
+  cursor: pointer;
+}
+
+.time-slot.admin-selectable:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.slot-header.admin-header {
+  background-color: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  margin: -8px -8px 16px -8px;
+}
+
+.time-range {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-range strong {
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.selected-badge {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.capacity-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.capacity-numbers {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.available {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.status-badge.full {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.status-badge.disabled {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.disabled-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: #9ca3af;
+  color: #ffffff;
+}
+
+/* ===== AZIONI SLOT ===== */
+.slot-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.user-booking {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.booked-label {
+  padding: 6px 12px;
+  background-color: #10b981;
+  color: #ffffff;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.unavailable-reason {
+  font-size: 14px;
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* ===== LISTA PRE subv */
+.bookings-list {
+  margin-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+}
+
+.no-bookings {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 16px;
+}
+
+.booking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.booking-item:last-child {
+  margin-bottom: 0;
+}
+
+.booking-user {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.booking-time {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ===== MESSAGGI ===== */
+.closed-message,
+.no-data-message {
+  text-align: center;
+  padding: 48px 24px;
+  color: #4b5563;
+}
+
+.closed-message h3,
+.no-data-message h3 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.closed-message p,
+.no-data-message p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.closed-message em {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* ===== BOTTONI ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  min-height: 40px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  transform: scale(1.1);
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn-success {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn-warning {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.btn-warning:hover:not(:disabled) {
+  background-color: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn-admin {
+  background-color: #1e40af;
+  color: #ffffff;
+}
+
+.btn-admin:hover:not(:disabled) {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+  min-height: 28px;
+}
+
+.btn-xs {
+  padding: 2px 6px;
+  font-size: 10px;
+  min-height: 20px;
+  border-radius: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .gym-booking-container {
+    padding: 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+  }
+  
+  .calendar-section,
+  .schedule-section {
+    padding: 16px;
+  }
+  
+  .admin-actions {
+    flex-direction: column;
+  }
+  
+  .slot-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .slot-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .capacity-info {
+    align-self: flex-end;
+  }
+  
+  .booking-item {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-grid {
+    gap: 2px;
+  }
+  
+  .calendar-day {
+    font-size: 12px;
+  }
+  
+  .time-range strong {
+    font-size: 16px;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+}

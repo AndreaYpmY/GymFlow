@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.model.dto.LoginRequest;
+import com.example.backend.model.dto.request.LoginRequest;
 import com.example.backend.model.dto.UserDetailsImpl;
 import com.example.backend.model.dto.response.*;
 import com.example.backend.model.entity.UserEntity;

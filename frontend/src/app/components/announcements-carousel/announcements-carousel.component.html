@@ -1,45 +1,66 @@
-<!-- announcements-carousel.component.html -->
-<section class="announcements-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Avvisi e Novità</h2>
-        <p class="section-subtitle">Rimani sempre aggiornato</p>
-      </div>
-      
-      <div class="carousel-container">
-        <div class="carousel-track" 
-             [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
-          <div class="announcement-slide" 
-               *ngFor="let announcement of announcements; let i = index"
-               [class]="getTypeClass(announcement.type)">
-            <div class="announcement-content">
-              <div class="announcement-header">
-                <span class="announcement-icon">{{ announcement.icon }}</span>
-                <span class="announcement-date">{{ announcement.date }}</span>
-              </div>
-              <h3 class="announcement-title">{{ announcement.title }}</h3>
-              <p class="announcement-description">{{ announcement.description }}</p>
+<section class="announcements-section" *ngIf="shouldShowCarousel">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Avvisi e Novità</h2>
+      <p class="section-subtitle">Rimani sempre aggiornato</p>
+    </div>
+    
+    <div class="carousel-container">
+      <div class="carousel-track" 
+           [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
+        <div class="announcement-slide" 
+             *ngFor="let announcement of announcements; let i = index"
+             [ngClass]="getAnnouncementClass(i)">
+          <div class="announcement-content">
+            <div class="announcement-header">
+              <span class="announcement-icon">{{ getAnnouncementIcon(announcement.title) }}</span>
+              <span class="announcement-date">{{ announcement.createdAt }}</span>
             </div>
+            <h3 class="announcement-title">{{ announcement.title }}</h3>
+            <p class="announcement-description">{{ announcement.description }}</p>
           </div>
         </div>
-        
-        <!-- Navigation Arrows -->
-        <button class="carousel-btn carousel-prev" (click)="prevSlide()">
-          ‹
+      </div>
+      
+      <!-- Navigation Arrows - Solo se ci sono più avvisi -->
+      <ng-container *ngIf="shouldShowNavigation">
+        <button class="carousel-btn carousel-prev" 
+                (click)="prevSlide()"
+                [attr.aria-label]="'Avviso precedente'">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+          </svg>
         </button>
-        <button class="carousel-btn carousel-next" (click)="nextSlide()">
-          ›
+        <button class="carousel-btn carousel-next" 
+                (click)="nextSlide()"
+                [attr.aria-label]="'Avviso successivo'">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
         </button>
-        
-        <!-- Dots Indicator -->
-        <div class="carousel-dots">
-          <button 
-            class="dot" 
-            *ngFor="let announcement of announcements; let i = index"
-            [class.active]="i === currentSlide"
-            (click)="goToSlide(i)">
-          </button>
-        </div>
+      </ng-container>
+      
+      <!-- Dots Indicator - Solo se ci sono più avvisi -->
+      <div class="carousel-dots" *ngIf="shouldShowNavigation">
+        <button 
+          class="dot" 
+          *ngFor="let announcement of announcements; let i = index"
+          [class.active]="i === currentSlide"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Vai all\'avviso ' + (i + 1)">
+        </button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- Messaggio quando non ci sono avvisi -->
+<section class="no-announcements-section" *ngIf="!shouldShowCarousel">
+  <div class="container">
+    <div class="no-announcements-content">
+      <div class="no-announcements-icon">📢</div>
+      <h3 class="no-announcements-title">Nessun avviso al momento</h3>
+      <p class="no-announcements-message">Controlla più tardi per nuovi aggiornamenti!</p>
+    </div>
+  </div>
+</section>

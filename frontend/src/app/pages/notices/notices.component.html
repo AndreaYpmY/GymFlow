@@ -1,0 +1,110 @@
+<div class="notices-container">
+    <!-- Header -->
+    <div class="notices-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <span class="title-icon">📢</span>
+          Bacheca Avvisi
+        </h1>
+        <p class="page-subtitle">
+          @if (userRole === UserRole.ADMIN) {
+            Gestisci gli avvisi della palestra
+          } @else {
+            Rimani aggiornato sulle novità della palestra
+          }
+        </p>
+      </div>
+      
+    </div>
+
+    <!-- Form per creare avvisi (solo admin) -->
+    @if (userRole === UserRole.ADMIN) {
+      <app-notice-form (noticeCreated)="onNoticeCreated($event)"></app-notice-form>
+    }
+
+    <!-- Filtri e ordinamenti -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label class="filter-label">Mostra:</label>
+        <div class="filter-buttons">
+          <button 
+            class="filter-btn" 
+            [class.active]="currentFilter === 'all'"
+            (click)="setFilter('all')">
+            Tutti ({{ filteredNotices.length }})
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="currentFilter === 'important'"
+            (click)="setFilter('important')">
+            Importanti ({{ getImportantCount() }})
+          </button>
+        </div>
+      </div>
+
+      <div class="sort-group">
+        <label class="sort-label">Ordina per:</label>
+        <select class="sort-select" [(ngModel)]="sortBy" (change)="applySorting()">
+          <option value="date-desc">Data (più recenti)</option>
+          <option value="date-asc">Data (meno recenti)</option>
+          <option value="likes-desc">Like (più apprezzati)</option>
+          <option value="title-asc">Titolo (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Lista avvisi -->
+    <div class="notices-list">
+      @if (isLoading) {
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Caricamento avvisi...</p>
+        </div>
+      } @else if (filteredNotices.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>Nessun avviso trovato</h3>
+          @if (currentFilter === 'all') {
+            <p>Non ci sono avvisi al momento.</p>
+            @if (userRole === UserRole.ADMIN) {
+              <p>Crea il primo avviso per iniziare!</p>
+            }
+          } @else {
+            <p>Non ci sono avvisi importanti al momento.</p>
+            <button class="btn-link" (click)="setFilter('all')">
+              Mostra tutti gli avvisi
+            </button>
+          }
+        </div>
+      } @else {
+        @for (notice of filteredNotices; track notice.id) {
+          <app-notice-card
+            [notice]="notice"
+            [userRole]="userRole"
+            (delete)="onDeleteNotice($event)"
+            (like)="onLikeNotice($event)">
+          </app-notice-card>
+        }
+      }
+    </div>
+
+    <!-- Footer statistiche (solo per admin) -->
+    @if (userRole === UserRole.ADMIN && allNotices.length > 0) {
+      <div class="admin-stats">
+        <div class="stats-card">
+          <div class="stat-item">
+            <span class="stat-number">{{ allNotices.length }}</span>
+            <span class="stat-label">Avvisi totali</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getTotalLikes() }}</span>
+            <span class="stat-label">Like totali</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getImportantCount() }}</span>
+            <span class="stat-label">Importanti</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>

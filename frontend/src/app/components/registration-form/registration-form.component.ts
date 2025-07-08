@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { finishRegistrationUserRequest } from '../../services/types';
+import { finishRegistrationUserRequest } from '../../model/auth-types';
 
 @Component({
   selector: 'app-registration-form',

@@ -35,7 +35,17 @@ export interface UserForAdmin {
   createdAt: string;
 }
 
-export interface PaginatedResponse {
+export interface ClientForAdmin{
+  id: number;
+  name: string;
+  surname: string;
+  email: string;
+  endOfSubscription: string | null;
+}
+
+
+
+export interface PaginatedUsersResponse {
   content: UserForAdmin[];
   pageable: Pageable;
   totalPages: number;
@@ -43,6 +53,16 @@ export interface PaginatedResponse {
   size: number;
   number: number;
 }
+
+export interface PaginatedClientsResponse {
+  content: ClientForAdmin[];
+  pageable: Pageable;
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+}
+
 
 export interface Pageable {
   offset: number;
@@ -104,3 +124,16 @@ export interface UserFormData {
 export interface CreateUserResponse {
   registrationCode: string;
 }
+
+type DayKey = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+
+export interface TrainerForAdmin {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+    schedules: {
+      [key in DayKey]: number; 
+    };
+  }
+

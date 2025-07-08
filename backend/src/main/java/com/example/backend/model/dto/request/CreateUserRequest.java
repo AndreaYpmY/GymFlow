@@ -12,12 +12,12 @@ public class CreateUserRequest {
     private Role role;
 
     private LocalDate subscriptionEndDate; // Per CLIENT
-    private Map<String, Integer> weeklyHours; // Per TRAINER
+    private Map<String, Float> weeklyHours; // Per TRAINER
 
     public CreateUserRequest() {
     }
 
-    public CreateUserRequest(String email, String fiscalCode, Role role, LocalDate subscriptionEndDate, Map<String, Integer> weeklyHours) {
+    public CreateUserRequest(String email, String fiscalCode, Role role, LocalDate subscriptionEndDate, Map<String, Float> weeklyHours) {
         this.email = email;
         this.fiscalCode = fiscalCode;
         this.role = role;
@@ -34,6 +34,6 @@ public class CreateUserRequest {
     public void setRole(Role role) { this.role = role; }
     public LocalDate getSubscriptionEndDate() { return subscriptionEndDate; }
     public void setSubscriptionEndDate(LocalDate subscriptionEndDate) { this.subscriptionEndDate = subscriptionEndDate; }
-    public Map<String, Integer> getWeeklyHours() { return weeklyHours; }
-    public void setWeeklyHours(Map<String, Integer> weeklyHours) { this.weeklyHours = weeklyHours; }
+    public Map<String, Float> getWeeklyHours() { return weeklyHours; }
+    public void setWeeklyHours(Map<String, Float> weeklyHours) { this.weeklyHours = weeklyHours; }
 }

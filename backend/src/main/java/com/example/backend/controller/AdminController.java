@@ -1,13 +1,18 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.dto.request.CreateUserRequest;
+import com.example.backend.model.dto.request.SetNewSubscription;
+import com.example.backend.model.dto.response.ClientSubscriptionResponse;
 import com.example.backend.model.dto.response.RegistrationForAdmin;
+import com.example.backend.model.dto.response.TrainerScheduleResponse;
 import com.example.backend.model.dto.response.UserForAdmin;
 import com.example.backend.model.entity.UserEntity;
 import com.example.backend.service.AdminService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -36,9 +41,25 @@ public class AdminController {
     }
 
 
+    @GetMapping("/clients")
+    public ResponseEntity<List<ClientSubscriptionResponse>> getClients(){
+        return adminService.getClientsSubscription();
+    }
 
+    @PutMapping("/clients/subscription")
+    public ResponseEntity<Void> updateClientSubscription(@RequestBody SetNewSubscription body) {
+        return adminService.setClientSubscriptionEndDate(body.getEmail(), body.getEndDate());
+    }
 
+    @GetMapping("/trainers")
+    public ResponseEntity<List<TrainerScheduleResponse>> getTrainers() {
+        return adminService.getTrainersSchedule();
+    }
 
+    @PutMapping("/trainer/schedule")
+    public ResponseEntity<Void> updateTrainerSchedule(@RequestBody TrainerScheduleResponse body) {
+        return adminService.setTrainerWorkingHours(body);
+    }
 
     private UserForAdmin toUserForAdmin(UserEntity user) {
         return new UserForAdmin(

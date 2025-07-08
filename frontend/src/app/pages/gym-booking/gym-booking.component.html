@@ -1,0 +1,274 @@
+<div class="gym-booking-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Prenotazione Sala Pesi</h1>
+  </div>
+
+  <div class="main-content">
+    <!-- Calendario laterale -->
+    <div class="calendar-section">
+      <div class="calendar-header">
+        <button (click)="previousMonth()" class="btn btn-icon"><</button>
+        <h3>{{ getMonthName() }}</h3>
+        <button (click)="nextMonth()" class="btn btn-icon">></button>
+      </div>
+
+      <div class="calendar-grid">
+        @for (day of ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']; track day) {
+          <div class="calendar-day-header">{{ day }}</div>
+        }
+
+        @for (day of calendarDays; track day.date) {
+          <div class="calendar-day"
+              [class.other-month]="!day.isCurrentMonth"
+              [class.selected]="day.date === selectedDate"
+              [class.today]="isToday(day.date)"
+              [class.has-bookings]="day.hasBookings"
+              [class.past]="isPastDate(day.date) || !isDateInRange(day.date)"
+              [class.clickable]="isDateInRange(day.date) && day.isCurrentMonth"
+              (click)="isDateInRange(day.date) && day.isCurrentMonth && selectDate(day.date)">
+            {{ day.dayNumber }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Sezione principale con gli slot -->
+    <div class="schedule-section">
+      <div class="schedule-header">
+        <h2>{{ selectedDate | date:'EEEE d MMMM y':'it-IT' }}</h2>
+        @if (selectedSchedule) {
+          <div class="day-status" [class.closed]="!selectedSchedule.isOpen">
+            {{ selectedSchedule.isOpen ? 'Aperto' : 'Chiuso' }}
+          </div>
+        }
+      </div>
+
+      <!-- Panel admin -->
+      @if (currentUser?.role === 'ADMIN') {
+        <div class="admin-panel">
+          <button (click)="toggleAdminPanel()" class="btn btn-admin">
+            {{ showAdminPanel ? 'Nascondi' : 'Mostra' }} Pannello Admin
+          </button>
+
+          @if (showAdminPanel) {
+            <div class="admin-controls">
+              <!-- Gestione Giorno -->
+              <div class="admin-section">
+                <h4>Gestione Giorno</h4>
+                <div class="admin-actions">
+                  <button (click)="toggleDayStatus()" 
+                          class="btn btn-warning"
+                          [disabled]="isPastDate(selectedDate)">
+                    {{ selectedSchedule?.isOpen ? 'Chiudi' : 'Apri' }} Giorno
+                  </button>
+                </div>
+              </div>
+
+              <!-- Gestione Slot -->
+              <div class="admin-section">
+                <h4>Gestione Slot</h4>
+                <div class="slot-action-selector">
+                  <button (click)="setAdminSlotAction('disable')"
+                          class="btn"
+                          [class.btn-danger]="adminSlotAction === 'disable'"
+                          [class.btn-outline]="adminSlotAction !== 'disable'">
+                    Disabilita Slot
+                  </button>
+                  <button (click)="setAdminSlotAction('enable')"
+                          class="btn"
+                          [class.btn-success]="adminSlotAction === 'enable'"
+                          [class.btn-outline]="adminSlotAction !== 'enable'">
+                    Abilita Slot
+                  </button>
+                </div>
+                
+                <div class="slot-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">Slot totali:</span>
+                    <span class="stat-value">{{ (selectedSchedule && selectedSchedule.timeSlots) ? selectedSchedule.timeSlots.length : 0 }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Slot disabilitati:</span>
+                    <span class="stat-value">{{ getDisabledSlotsCount() }}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Slot selezionati:</span>
+                    <span class="stat-value">{{ adminSelectedSlots.length }}</span>
+                  </div>
+                </div>
+
+                <div class="admin-actions">
+                  <button (click)="applySlotChanges()" 
+                          class="btn"
+                          [class.btn-danger]="adminSlotAction === 'disable'"
+                          [class.btn-success]="adminSlotAction === 'enable'"
+                          [disabled]="adminSelectedSlots.length === 0 || isPastDate(selectedDate)">
+                    {{ adminSlotAction === 'disable' ? 'Disabilita' : 'Abilita' }} 
+                    Slot Selezionati ({{ adminSelectedSlots.length }})
+                  </button>
+                </div>
+                
+                <div class="admin-help">
+                  <p>
+                    <strong>Modalità:</strong> {{ adminSlotAction === 'disable' ? 'Disabilitazione' : 'Abilitazione' }} slot
+                  </p>
+                  <p>
+                    @if (adminSlotAction === 'disable') {
+                      Clicca sugli slot <strong>abilitati</strong> per selezionarli e disabilitarli.
+                    } @else {
+                      Clicca sugli slot <strong>disabilitati</strong> per selezionarli e abilitarli.
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Lista degli slot -->
+      @if (selectedSchedule && selectedSchedule.isOpen) {
+        <div class="time-slots">
+          @for (slot of selectedSchedule.timeSlots; track slot.startTime + slot.endTime) {
+            <div class="time-slot"
+                 [class.full]="slot.currentBookings >= slot.maxCapacity"
+                 [class.unavailable]="!slot.isAvailable"
+                 [class.disabled]="isSlotDisabled(slot.startTime, slot.endTime)"
+                 [class.selected]="currentUser?.role === 'ADMIN' && isSlotSelected(slot.startTime, slot.endTime)"
+                 [class.user-booked]="getUserBookingForSlot(slot.startTime, slot.endTime) !== null"
+                 [class.past]="isSlotPast(selectedDate, slot.startTime)"
+                 [class.admin-selectable]="currentUser?.role === 'ADMIN' && !isPastDate(selectedDate) && !isSlotPast(selectedDate, slot.startTime)"
+                 (click)="currentUser?.role === 'ADMIN' && !isPastDate(selectedDate) && !isSlotPast(selectedDate, slot.startTime) && 
+                          ((adminSlotAction === 'disable' && slot.isAvailable) || 
+                           (adminSlotAction === 'enable' && !slot.isAvailable && slot.currentBookings < slot.maxCapacity)) && 
+                          toggleSlotSelection(slot.startTime, slot.endTime)">
+              
+              <!-- Header slot per Admin -->
+              @if (currentUser?.role === 'ADMIN') {
+                <div class="slot-header admin-header">
+                  <div class="time-range">
+                    <strong>{{ slot.startTime }} - {{ slot.endTime }}</strong>
+                    @if (isSlotSelected(slot.startTime, slot.endTime)) {
+                      <span class="selected-badge">SELEZIONATO</span>
+                    }
+                  </div>
+                  <div class="capacity-info">
+                    <span class="capacity-numbers">{{ slot.currentBookings }} / {{ slot.maxCapacity }}</span>
+                    @if (!slot.isAvailable) {
+                      @if (slot.currentBookings >= slot.maxCapacity) {
+                        <span class="status-badge full">PIENO</span>
+                      } @else {
+                        <span class="status-badge disabled">DISABILITATO</span>
+                      }
+                    } @else {
+                      <span class="status-badge available">DISPONIBILE</span>
+                    }
+                  </div>
+                </div>
+              } @else {
+                <!-- Header slot per Client/Trainer -->
+                <div class="slot-header">
+                  <div class="time-range">
+                    <strong>{{ slot.startTime }} - {{ slot.endTime }}</strong>
+                  </div>
+                  <div class="capacity-info">
+                    {{ slot.currentBookings }} / {{ slot.maxCapacity }}
+                    @if (!slot.isAvailable) {
+                      @if (slot.currentBookings >= slot.maxCapacity) {
+                        <span class="disabled-badge">PIENO</span>
+                      } @else {
+                        <span class="disabled-badge">NON DISPONIBILE</span>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Azioni per client -->
+              @if (currentUser?.role === 'CLIENT') {
+                <div class="slot-actions">
+                  @if (getUserBookingForSlot(slot.startTime, slot.endTime); as userBooking) {
+                    <div class="user-booking">
+                      <span class="booked-label">Prenotato</span>
+                      <button (click)="cancelBooking(userBooking.id)" class="btn btn-danger btn-sm">
+                        Cancella
+                      </button>
+                    </div>
+                  } @else {
+                    @if (canUserBookSlot(slot.startTime, slot.endTime)) {
+                      <button (click)="bookSlot(slot.startTime, slot.endTime)"
+                              class="btn btn-primary">
+                        Prenota
+                      </button>
+                    } @else {
+                      <span class="unavailable-reason">
+                        @switch (true) {
+                          @case (slot.currentBookings >= slot.maxCapacity) {
+                            <span>Slot pieno</span>
+                          }
+                          @case (!slot.isAvailable && slot.currentBookings < slot.maxCapacity) {
+                            <span>Non disponibile</span>
+                          }
+                          @case (!canUserBook(selectedDate, slot.startTime)) {
+                            <span>Fuori dal periodo di prenotazione</span>
+                          }
+                          @case (getUserBookingsForDate(selectedDate).length > 0) {
+                            <span>Hai già una prenotazione oggi</span>
+                          }
+                        }
+                      </span>
+                    }
+                  }
+                </div>
+              }
+
+              <!-- Lista prenotazioni per admin e trainer -->
+              @if (currentUser?.role === 'ADMIN' || currentUser?.role === 'TRAINER') {
+                <div class="bookings-list">
+                  @if (slot.bookings.length === 0) {
+                    <div class="no-bookings">
+                      Nessuna prenotazione
+                    </div>
+                  } @else {
+                    @for (booking of slot.bookings; track booking.id) {
+                      <div class="booking-item">
+                        <span class="booking-user">{{ booking.userName }}</span>
+                        <span class="booking-time">{{ booking.createdAt | date:'short':'it-IT' }}</span>
+                        @if (currentUser?.role === 'ADMIN') {
+                          <button (click)="cancelBooking(booking.id)"
+                                  class="btn btn-danger btn-xs">
+                            X
+                          </button>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Messaggio quando la palestra è chiusa -->
+      @if (selectedSchedule && !selectedSchedule.isOpen) {
+        <div class="closed-message">
+          <h3>La palestra è chiusa in questa data</h3>
+          <p>Seleziona un'altra data per vedere gli orari disponibili.</p>
+          @if (currentUser?.role === 'ADMIN') {
+            <p><em>Come admin, puoi riaprire questo giorno usando il pannello di controllo sopra.</em></p>
+          }
+        </div>
+      }
+
+      <!-- Messaggio quando non ci sono dati -->
+      @if (!selectedSchedule) {
+        <div class="no-data-message">
+          <h3>Nessun dato disponibile</h3>
+          <p>Seleziona una data dal calendario.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

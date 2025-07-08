@@ -1,0 +1,83 @@
+<div class="form-container" [class.hidden]="!showForm">
+    <div class="form-header">
+      <h3>Nuovo Avviso</h3>
+      <button class="close-btn" (click)="toggleForm()" type="button">✕</button>
+    </div>
+    
+    <form (ngSubmit)="onSubmit()" #noticeForm="ngForm">
+      <div class="form-group">
+        <label for="title">Titolo *</label>
+        <input 
+          type="text" 
+          id="title"
+          name="title"
+          [(ngModel)]="formData.title"
+          #titleInput="ngModel"
+          required
+          maxlength="100"
+          placeholder="Inserisci il titolo dell'avviso"
+          class="form-input"
+          [class.error]="titleInput.invalid && titleInput.touched">
+        @if (titleInput.invalid && titleInput.touched) {
+          <span class="error-message">Il titolo è obbligatorio</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descrizione *</label>
+        <textarea 
+          id="description"
+          name="description"
+          [(ngModel)]="formData.description"
+          #descriptionInput="ngModel"
+          required
+          maxlength="500"
+          rows="4"
+          placeholder="Inserisci la descrizione dell'avviso"
+          class="form-textarea"
+          [class.error]="descriptionInput.invalid && descriptionInput.touched"></textarea>
+        @if (descriptionInput.invalid && descriptionInput.touched) {
+          <span class="error-message">La descrizione è obbligatoria</span>
+        }
+        <small class="char-count">{{ formData.description.length }}/500 caratteri</small>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input 
+            type="checkbox" 
+            id="important"
+            name="important"
+            [(ngModel)]="formData.important"
+            class="form-checkbox">
+          <label for="important" class="checkbox-label">
+            <span class="checkbox-icon">⭐</span>
+            Segna come importante
+          </label>
+        </div>
+        <small class="help-text">Gli avvisi importanti vengono evidenziati con un badge speciale</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">
+          Annulla
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="noticeForm.invalid || isSubmitting">
+          @if (isSubmitting) {
+            <span class="loading-spinner"></span>
+          }
+          Pubblica Avviso
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Floating Action Button per aprire il form -->
+  @if (!showForm) {
+    <button class="fab" (click)="toggleForm()" title="Nuovo avviso">
+      <span class="fab-icon">+</span>
+    </button>
+  }

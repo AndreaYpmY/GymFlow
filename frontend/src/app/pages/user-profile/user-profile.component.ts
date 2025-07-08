@@ -2,19 +2,20 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { UserProfile } from '../../services/types'
+import { UserProfile } from '../../model/auth-types'
 import { CommonModule } from '@angular/common';
 import { PersonalDataComponent } from '../../components/personal-data/personal-data.component';
 import { Subscription } from 'rxjs';
 import { UserManagementComponent } from '../../components/user-management/user-management.component';
-
+import { TrainerSchedulesComponent } from '../../components/trainer-schedules/trainer-schedules.component';
+import { SubscriptionManagementComponent } from '../../components/subscription-management/subscription-management.component';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
   standalone: true,
-  imports: [ RouterModule, CommonModule, PersonalDataComponent, UserManagementComponent ]
+  imports: [ RouterModule, CommonModule, PersonalDataComponent, UserManagementComponent ,SubscriptionManagementComponent, TrainerSchedulesComponent]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   currentUser: UserProfile | null = null;

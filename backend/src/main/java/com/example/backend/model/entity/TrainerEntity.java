@@ -18,19 +18,19 @@ public class TrainerEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
-    private Integer monday;
-    private Integer tuesday;
-    private Integer wednesday;
-    private Integer thursday;
-    private Integer friday;
-    private Integer saturday;
+    private Float monday;
+    private Float tuesday;
+    private Float wednesday;
+    private Float thursday;
+    private Float friday;
+    private Float saturday;
 
     // Non funziona lombok
 
     public TrainerEntity() {
     }
 
-    public TrainerEntity(Long id, UserEntity user, Integer monday, Integer tuesday, Integer wednesday, Integer thursday, Integer friday, Integer saturday) {
+    public TrainerEntity(Long id, UserEntity user, Float monday, Float tuesday, Float wednesday, Float thursday, Float friday, Float saturday) {
         this.id = id;
         this.user = user;
         this.monday = monday;
@@ -41,7 +41,7 @@ public class TrainerEntity {
         this.saturday = saturday;
     }
 
-    public TrainerEntity(UserEntity user, Map<String,Integer> map) {
+    public TrainerEntity(UserEntity user, Map<String,Float> map) {
         this.user = user;
         populateFromMap(map);
     }
@@ -62,56 +62,56 @@ public class TrainerEntity {
         this.user = user;
     }
 
-    public Integer getMonday() {
+    public Float getMonday() {
         return monday;
     }
 
-    public void setMonday(Integer monday) {
+    public void setMonday(Float monday) {
         this.monday = monday;
     }
 
-    public Integer getTuesday() {
+    public Float getTuesday() {
         return tuesday;
     }
 
-    public void setTuesday(Integer tuesday) {
+    public void setTuesday(Float tuesday) {
         this.tuesday = tuesday;
     }
 
-    public Integer getWednesday() {
+    public Float getWednesday() {
         return wednesday;
     }
 
-    public void setWednesday(Integer wednesday) {
+    public void setWednesday(Float wednesday) {
         this.wednesday = wednesday;
     }
 
-    public Integer getThursday() {
+    public Float getThursday() {
         return thursday;
     }
 
-    public void setThursday(Integer thursday) {
+    public void setThursday(Float thursday) {
         this.thursday = thursday;
     }
 
-    public Integer getFriday() {
+    public Float getFriday() {
         return friday;
     }
 
-    public void setFriday(Integer friday) {
+    public void setFriday(Float friday) {
         this.friday = friday;
     }
 
-    public Integer getSaturday() {
+    public Float getSaturday() {
         return saturday;
     }
 
-    public void setSaturday(Integer saturday) {
+    public void setSaturday(Float saturday) {
         this.saturday = saturday;
     }
 
-    public void populateFromMap(Map<String, Integer> weeklyHours) {
-        for (Map.Entry<String, Integer> entry : weeklyHours.entrySet()) {
+    public void populateFromMap(Map<String, Float> weeklyHours) {
+        for (Map.Entry<String, Float> entry : weeklyHours.entrySet()) {
             switch (entry.getKey().toLowerCase()) {
                 case "monday" -> monday = entry.getValue();
                 case "tuesday" -> tuesday = entry.getValue();

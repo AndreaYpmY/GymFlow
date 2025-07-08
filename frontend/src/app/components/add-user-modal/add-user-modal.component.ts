@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChange
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UserFormData} from "../../services/types"
+import { UserFormData} from "../../model/auth-types"
 
 
 interface RoleOption {
